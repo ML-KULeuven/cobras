@@ -1,7 +1,9 @@
-from cobras import COBRAS
-from superinstance_kshape import SuperInstance_kShape
-from kshape.core import kshape, _sbd
 import numpy as np
+from kshape.core import kshape, _sbd
+from cobras_ts.superinstance_kshape import SuperInstance_kShape
+
+from cobras_ts.cobras import COBRAS
+
 
 class COBRAS_kShape(COBRAS):
 

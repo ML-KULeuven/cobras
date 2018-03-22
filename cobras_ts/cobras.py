@@ -1,11 +1,12 @@
-from cluster import Cluster
-from clustering import Clustering
-from superinstance import SuperInstance
-import numpy as np
+import abc
+import itertools
 import random
 import time
-import itertools
-import abc
+
+import numpy as np
+from cobras_ts.cluster import Cluster
+
+from cobras_ts.clustering import Clustering
 
 
 class COBRAS:
@@ -21,6 +22,10 @@ class COBRAS:
 
         self.clustering = None
         self.split_cache = dict()
+        self.start = None
+        self.results = None
+        self.ml = None
+        self.cl = None
 
     def cluster(self):
         self.start = time.time()
@@ -60,7 +65,6 @@ class COBRAS:
             originating_cluster.super_instances.remove(to_split)
             if len(originating_cluster.super_instances) == 0:
                 self.clustering.clusters.remove(originating_cluster)
-
 
             split_level = self.determine_split_level(to_split)
             new_super_instances = self.split_superinstance(to_split, split_level)

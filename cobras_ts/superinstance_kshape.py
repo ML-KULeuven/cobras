@@ -1,6 +1,6 @@
 import numpy as np
 from kshape.core import _sbd
-from superinstance import SuperInstance
+from cobras_ts.superinstance import SuperInstance
 
 
 def get_prototype(A,indices, prototype):

@@ -1,8 +1,9 @@
-from cobras import COBRAS
-from superinstance_dtw import SuperInstance_DTW, get_prototype
-from kshape.core import kshape, _sbd
-from sklearn.cluster import SpectralClustering
 import numpy as np
+from sklearn.cluster import SpectralClustering
+from superinstance_dtw import SuperInstance_DTW, get_prototype
+
+from cobras_ts.cobras import COBRAS
+
 
 class COBRAS_DTW(COBRAS):
 
