@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.cluster import SpectralClustering
-from superinstance_dtw import SuperInstance_DTW, get_prototype
+from cobras_ts.superinstance_dtw import SuperInstance_DTW, get_prototype
 
 from cobras_ts.cobras import COBRAS
 
