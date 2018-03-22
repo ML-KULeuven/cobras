@@ -1,3 +1,12 @@
+"""
+Most of the clustering procedure is shared between COBRAS_dtw and COBRAS_kshape, this is captured in the COBRAS class.
+The following methods are specific to each variant:
+    - create_superinstance: super-instances for COBRAS_dtw and COBRAS_kshape are different, this method
+                            simply creates a super-instance of the appropriate type
+    - split_superinstance: this is also different or COBRAS_dtw and COBRAS_kshape, the first uses
+                           spectral clustering, the second kshape to split a super-instance
+"""
+
 import abc
 import itertools
 import random
@@ -7,7 +16,6 @@ import numpy as np
 from cobras_ts.cluster import Cluster
 
 from cobras_ts.clustering import Clustering
-
 
 class COBRAS:
     def __init__(self, data, labels, max_questions, train_indices=None):
@@ -164,7 +172,6 @@ class COBRAS:
             return new_clusters
 
     def merge_containing_clusters(self, starting_level=False):
-
         start_clustering = self.results[-1][0]
 
         merged = True

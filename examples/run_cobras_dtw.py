@@ -22,7 +22,7 @@ dists[dists == np.inf] = 0
 dists = dists + dists.T - np.diag(np.diag(dists))
 affinities = np.exp(-dists * alpha)
 
-clusterer = cobras_dtw.COBRAS_DTW(affinities, labels, budget, range(len(labels)))
+clusterer = cobras_dtw.COBRAS_DTW(affinities, labels, budget)
 clusterings, runtimes, ml, cl = clusterer.cluster()
 print(clusterings)
 print("done")

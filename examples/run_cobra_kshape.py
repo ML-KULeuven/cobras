@@ -13,7 +13,7 @@ data = np.loadtxt(os.path.join(ucr_path,dataset,dataset + '_TEST'), delimiter=',
 series = data[:,1:]
 labels = data[:,0]
 
-clusterer = cobras_kshape.COBRAS_kShape(series, labels, budget, range(len(labels)))
+clusterer = cobras_kshape.COBRAS_kShape(series, labels, budget)
 clusterings, runtimes, ml, cl = clusterer.cluster()
 print(clusterings)
 print("done")
