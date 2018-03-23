@@ -228,9 +228,12 @@ class COBRAS:
                     else:
                         self.results.append((start_clustering, time.time() - self.start, len(self.ml) + len(self.cl)))
 
+            '''
             if not merged and not starting_level:
+                print("or is it this case???")
                 self.results[-1] = (self.clustering.construct_cluster_labeling(), time.time() - self.start,
                                     len(self.ml) + len(self.cl))
+            '''
 
     def identify_superinstance_to_split(self):
         superinstances = self.clustering.get_super_instances()
