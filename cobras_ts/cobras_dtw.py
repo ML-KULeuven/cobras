@@ -31,7 +31,7 @@ class COBRAS_DTW(COBRAS):
                 no_training.append((cur_indices, get_prototype(self.data, cur_indices)))
 
         for indices, centroid in no_training:
-            closest_train = max(training, key=lambda x: self.data[x.prototype_idx, centroid])
+            closest_train = max(training, key=lambda x: self.data[x.representative_idx, centroid])
             closest_train.indices.extend(indices)
 
         return training
