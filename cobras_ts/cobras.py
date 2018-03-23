@@ -87,7 +87,7 @@ class COBRAS:
                 # this case handles this, we simply add the super-instance back to its originating cluster,
                 # and set the already_tried flag to make sure we do not keep trying to split this superinstance
                 originating_cluster.super_instances.append(to_split)
-                to_split.already_tried = True
+                to_split.tried_splitting = True
                 continue
             else:
                 self.clustering.clusters.extend(new_clusters)
