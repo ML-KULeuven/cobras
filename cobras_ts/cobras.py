@@ -50,6 +50,8 @@ class COBRAS:
         # the split level for this initial super-instance is determined,
         # the super-instance is split, and a new cluster is created for each of the newly created superinstances
         initial_k = self.determine_split_level(initial_superinstance)
+
+
         superinstances = self.split_superinstance(initial_superinstance,initial_k)
         self.clustering = Clustering([])
         for si in superinstances:
@@ -65,7 +67,6 @@ class COBRAS:
         self.merge_containing_clusters(starting_level=True)
 
         while len(self.ml) + len(self.cl) < self.max_questions:
-
             to_split, originating_cluster = self.identify_superinstance_to_split()
             if to_split is None:
                 break
@@ -176,7 +177,6 @@ class COBRAS:
 
         merged = True
         while merged and len(self.ml) + len(self.cl) < self.max_questions:
-
             cluster_pairs = itertools.combinations(self.clustering.clusters, 2)
             cluster_pairs = [x for x in cluster_pairs if
                              not x[0].cannot_link_to_other_cluster(x[1], self.cl)]
@@ -228,12 +228,11 @@ class COBRAS:
                     else:
                         self.results.append((start_clustering, time.time() - self.start, len(self.ml) + len(self.cl)))
 
-            '''
-            if not merged and not starting_level:
-                print("or is it this case???")
+
+            if not starting_level:
                 self.results[-1] = (self.clustering.construct_cluster_labeling(), time.time() - self.start,
                                     len(self.ml) + len(self.cl))
-            '''
+
 
     def identify_superinstance_to_split(self):
         superinstances = self.clustering.get_super_instances()
