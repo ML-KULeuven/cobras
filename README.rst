@@ -41,6 +41,7 @@ Running COBRAS_kShape:
 
 
 Running COBRAS_DTW:
+
 This uses the dtaidistance package to compute the DTW distance matrix.
 Note that constructing this matrix is typically the most time consuming step, and significant speedups can be achieved
 by using the C implementation in the dtaidistance package.
@@ -86,7 +87,6 @@ Toon Van Craenendonck at toon.vancraenendonck@cs.kuleuven.be
 License
 -----------------
 
-::
     COBRAS code for semi-supervised time series clustering.
 
     Copyright 2018 KU Leuven, DTAI Research Group
@@ -95,7 +95,7 @@ License
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-        http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
