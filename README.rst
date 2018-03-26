@@ -41,12 +41,16 @@ Running COBRAS_kShape:
 
 
 Running COBRAS_DTW:
+This uses the dtaidistance package to compute the DTW distance matrix.
+Note that constructing this matrix is typically the most time consuming step, and significant speedups can be achieved
+by using the C implementation in the dtaidistance package.
 
     .. code-block:: python
 
         import os
         import numpy as np
         from cobras_ts import cobras_dtw
+        from dtaidistance import dtw
 
         ucr_path = '/path/to/UCR/archive'
         dataset = 'ECG200'
