@@ -1,1 +1,2 @@
-include /hierarchical_clustering.py
+include examples/run_cobras_dtw.py
+include examples/run_cobras_kshape.py
