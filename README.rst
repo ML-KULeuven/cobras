@@ -18,11 +18,11 @@ This package is available on PyPi::
 Usage
 -----------------
 
-Examples can be found in the `examples` subdirectory.
+Examples can be found in the examples subdirectory.
 
 Running COBRAS_kShape::
 
-    .. code-block:: python
+    .. code:: python
 
         import os
         import numpy as np
