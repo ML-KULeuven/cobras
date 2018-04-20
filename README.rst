@@ -8,7 +8,7 @@ Library for semi-supervised time series clustering using pairwise constraints.
 
     .. image:: images/cobras_ts_demo.png
         :alt: COBRAS^TS for interactive time series clustering
-        :width: 25%
+        :width: 5%
         :align: center
 
 
