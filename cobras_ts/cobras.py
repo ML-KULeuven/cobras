@@ -18,13 +18,13 @@ from cobras_ts.cluster import Cluster
 from cobras_ts.clustering import Clustering
 
 class COBRAS:
-    def __init__(self, data, labels, max_questions, train_indices=None):
+    def __init__(self, data, querier, max_questions, train_indices=None):
         self.data = data
-        self.labels = labels
+        self.querier = querier
         self.max_questions = max_questions
 
         if train_indices is None:
-            self.train_indices = range(len(labels))
+            self.train_indices = range(self.data.shape[0])
         else:
             self.train_indices = train_indices
 
@@ -40,12 +40,12 @@ class COBRAS:
 
         # 'results' will contain tuples (cluster labels, elapsed time, number of pairwise constraints)
         # we will add an entry for each constraint that is queried
-        self.results = [([0] * len(self.labels),0,0)]
+        self.results = [([0] * self.data.shape[0],0,0)]
         self.ml = []
         self.cl = []
 
-        # initially, there is only one super-instance that contains all data indices (i.e. list(range(len(self.labels))))
-        initial_superinstance = self.create_superinstance(list(range(len(self.labels))))
+        # initially, there is only one super-instance that contains all data indices (i.e. list(range(self.data.shape[0])))
+        initial_superinstance = self.create_superinstance(list(range(self.data.shape[0])))
 
         # the split level for this initial super-instance is determined,
         # the super-instance is split, and a new cluster is created for each of the newly created superinstances
@@ -61,7 +61,7 @@ class COBRAS:
         # for the first couple of queries (those used to determine the initial splitting level)
         # we do not have a clustering, we just return 'all elements in one cluster'
         for i in range(len(self.ml) + len(self.cl)):
-            self.results.append(([0] * len(self.labels), time.time() - self.start, len(self.ml) + len(self.cl)))
+            self.results.append(([0] * self.data.shape[0], time.time() - self.start, len(self.ml) + len(self.cl)))
 
         # the first bottom up merging step
         self.merge_containing_clusters(starting_level=True)
@@ -136,7 +136,7 @@ class COBRAS:
             pt1 = min([bc1.representative_idx, bc2.representative_idx])
             pt2 = max([bc1.representative_idx, bc2.representative_idx])
 
-            if self.labels[pt1] == self.labels[pt2]:
+            if self.querier.query_points(pt1,pt2):
                 self.ml.append((pt1, pt2))
                 self.results.append((self.results[-1][0], time.time() - self.start, len(self.ml) + len(self.cl)))
                 must_link_found = True
@@ -202,7 +202,7 @@ class COBRAS:
                 if len(self.ml) + len(self.cl) == self.max_questions:
                     break
 
-                if self.labels[pt1] == self.labels[pt2]:
+                if self.querier.query_points(pt1,pt2):
                     x.super_instances.extend(y.super_instances)
                     self.clustering.clusters.remove(y)
                     self.ml.append((pt1, pt2))
