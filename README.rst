@@ -3,12 +3,13 @@ COBRAS for time-series clustering
 =================================
 
 Library for semi-supervised time series clustering using pairwise constraints.
+
 COBRAS_TS currently supports the following two modes of running:
 
-1. With labeled data, in this case the pairwise relations are derived from the labels.
+1. With *labeled data*. in this case the pairwise relations are derived from the labels.
    This is mainly used to compare COBRAS_TS experimentally to competitors.
 
-2. With interaction through the commandline.
+2. With *interaction through the commandline*.
    In this case the user is queried about the pairwise relations, and can answer with yes (y) and no (n)
    through the commandline. The indices that are shown in the queries are the row indices in the specified
    time series matrix (starting from zero).
