@@ -2,34 +2,21 @@ from cobras_ts.querier import Querier
 
 from tornado import gen
 from bokeh.models.renderers import GlyphRenderer
+from bokeh.models import ColumnDataSource
+from bokeh.plotting import figure, show
+from bokeh.layouts import row
 from functools import partial
 import time
 import numpy as np
 import datashader
 import pandas as pd
-from bokeh.plotting import figure
+
 
 @gen.coroutine
 def update(frame1, frame2, xs, ys1, ys2):
+    frame1.data_source.data = dict(x=xs, y=ys1)
+    frame2.data_source.data = dict(x=xs, y=ys2)
 
-    to_delete = None
-    for r in frame1.renderers:
-        if isinstance(r, GlyphRenderer)   :
-            to_delete = r
-    if to_delete:
-        frame1.renderers.remove(to_delete)
-
-    to_delete = None
-    for r in frame2.renderers:
-        if isinstance(r, GlyphRenderer)   :
-            to_delete = r
-    if to_delete:
-        frame2.renderers.remove(to_delete)
-
-    line1 = frame1.line(xs, y=ys1)
-    line2 = frame2.line(xs, y=ys2)
-
-    return line1, line2
 
 @gen.coroutine
 def update_clustering(bokeh_layout, data, clustering):
@@ -80,15 +67,26 @@ def update_clustering(bokeh_layout, data, clustering):
 
 class VisualQuerier(Querier):
 
-    def __init__(self, data):
+    def __init__(self, data, bokeh_doc, bokeh_layout, line1, line2):
         super(VisualQuerier, self).__init__()
 
         self.data = data
 
+        self.line1 = line1
+        self.line2 = line2
+
+        self.bokeh_doc = bokeh_doc
+        self.bokeh_layout = bokeh_layout
+
+        self.query_answered = False
+        self.query_result = None
+
     def query_points(self, idx1, idx2):
-        time.sleep(0.2)  # to fix (?) mysterious issue with bokeh..
+
+        print("querying points.. ")
+        time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
-            partial(update, line1=self.line1, line2=self.line2, ts1=self.ts1, ts2=self.ts2,
+            partial(update, frame1=self.line1, frame2=self.line2,
                     xs=list(range(self.data.shape[1])), ys1=self.data[idx1, :], ys2=self.data[idx2, :]))
 
         while not self.query_answered:
@@ -96,4 +94,10 @@ class VisualQuerier(Querier):
         self.query_answered = False
 
         return self.query_result
+
+    def update_clustering(self, clustering):
+        time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
+        self.bokeh_doc.add_next_tick_callback(
+            partial(update_clustering, bokeh_layout=self.bokey_layout, data=self.data, clustering=clustering))
+
 

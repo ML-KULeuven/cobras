@@ -71,6 +71,8 @@ class COBRAS:
             if to_split is None:
                 break
 
+            #self.querier.update_clustering(self.clustering.construct_cluster_labeling())
+
             originating_cluster.super_instances.remove(to_split)
             if len(originating_cluster.super_instances) == 0:
                 self.clustering.clusters.remove(originating_cluster)
