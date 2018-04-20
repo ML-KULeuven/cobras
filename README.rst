@@ -4,9 +4,12 @@ COBRAS for time-series clustering
 
 Library for semi-supervised time series clustering using pairwise constraints.
 
-.. raw:: html
+.. class:: no-web
 
-    <img src="https://bytebucket.org/toon_vc/cobras_ts/raw/dc70fb60c845ff84b6ccc62b686ca2c5de32afd6/images/cobras_ts_demo.png" height="200px">
+    .. image:: images/cobras_ts_demo_resized.png
+        :alt: COBRAS^TS for interactive time series clustering
+        :width: 5%
+        :align: center
 
 
 -----------------
