@@ -25,10 +25,14 @@ Running COBRAS_kShape:
     .. code-block:: python
 
         import os
-        import numpy as np
-        from cobras_ts import cobras_kshape
 
-        ucr_path = '/path/to/UCR/archive'
+        import numpy as np
+        from sklearn import metrics
+
+        from cobras_ts.cobras_kshape import COBRAS_kShape
+        from cobras_ts.labelquerier import LabelQuerier
+
+        ucr_path = '/home/toon/Downloads/UCR_TS_Archive_2015'
         dataset = 'ECG200'
         budget = 100
 
@@ -36,8 +40,12 @@ Running COBRAS_kShape:
         series = data[:,1:]
         labels = data[:,0]
 
-        clusterer = cobras_kshape.COBRAS_kShape(series, labels, budget)
+        clusterer = COBRAS_kShape(series, LabelQuerier(labels), budget)
         clusterings, runtimes, ml, cl = clusterer.cluster()
+
+        print(clusterings)
+        print("done")
+        print(metrics.adjusted_rand_score(clusterings[-1],labels))
 
 
 Running COBRAS_DTW:
@@ -49,11 +57,15 @@ by using the C implementation in the dtaidistance package.
     .. code-block:: python
 
         import os
-        import numpy as np
-        from cobras_ts import cobras_dtw
-        from dtaidistance import dtw
 
-        ucr_path = '/path/to/UCR/archive'
+        import numpy as np
+        from dtaidistance import dtw
+        from sklearn import metrics
+
+        from cobras_ts.cobras_dtw import COBRAS_DTW
+        from cobras_ts.labelquerier import LabelQuerier
+
+        ucr_path = '/home/toon/Downloads/UCR_TS_Archive_2015'
         dataset = 'ECG200'
         budget = 100
         alpha = 0.5
@@ -63,12 +75,13 @@ by using the C implementation in the dtaidistance package.
         series = data[:,1:]
         labels = data[:,0]
 
+
         dists = dtw.distance_matrix(series, window=int(0.01 * window * series.shape[1]))
         dists[dists == np.inf] = 0
         dists = dists + dists.T - np.diag(np.diag(dists))
         affinities = np.exp(-dists * alpha)
 
-        clusterer = cobras_dtw.COBRAS_DTW(affinities, labels, budget)
+        clusterer = COBRAS_DTW(affinities, LabelQuerier(labels), budget)
         clusterings, runtimes, ml, cl = clusterer.cluster()
 
 
