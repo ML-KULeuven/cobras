@@ -1,10 +1,11 @@
 """
 Most of the clustering procedure is shared between COBRAS_dtw and COBRAS_kshape, this is captured in the COBRAS class.
 The following methods are specific to each variant:
-    - create_superinstance: super-instances for COBRAS_dtw and COBRAS_kshape are different, this method
-                            simply creates a super-instance of the appropriate type
-    - split_superinstance: this is also different or COBRAS_dtw and COBRAS_kshape, the first uses
-                           spectral clustering, the second kshape to split a super-instance
+
+- create_superinstance: super-instances for COBRAS_dtw and COBRAS_kshape are different, this method
+                        simply creates a super-instance of the appropriate type
+- split_superinstance: this is also different or COBRAS_dtw and COBRAS_kshape, the first uses
+                        spectral clustering, the second kshape to split a super-instance
 """
 
 import abc

@@ -128,7 +128,7 @@ setup(
     # Similar to `install_requires` above, these must be valid existing
     # projects.
     extras_require={  # Optional
-        'dev': ['check-manifest'],
+        'dev': ['check-manifest', 'sphinx_rtd_theme'],
         'test': ['coverage'],
     },
 
@@ -157,7 +157,7 @@ setup(
     # executes the function `main` from this package when invoked:
     entry_points={  # Optional
         'console_scripts': [
-            'sample=sample:main',
+            'cobras_ts=cobras_ts.cli:main',
         ],
     },
 
