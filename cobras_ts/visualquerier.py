@@ -31,14 +31,15 @@ def update(bokeh_layout, xs, ys1, ys2):
 @gen.coroutine
 def update_clustering(bokeh_layout, data, clustering):
 
-    n_clusters = len(set(clustering))
 
-    plot_width = int(800 / n_clusters)
+
+    plot_width = int(800 / len(clustering.clusters))
     plot_height = int(plot_width / 2)
 
     plots = []
-    for c in set(clustering):
-        c_idxs = np.where(np.array(clustering) == c)[0]
+
+    for c in clustering.clusters:
+        c_idxs = c.get_all_points()
         cur_data = data[c_idxs, :]
 
         x_range = 0, cur_data.shape[1]
@@ -70,8 +71,51 @@ def update_clustering(bokeh_layout, data, clustering):
         cluster_plot.image_rgba(image=[img.data], x=x_range[0], y=y_range[0], dw=x_range[1] - x_range[0],
                                 dh=y_range[1] - y_range[0])
 
+
+        for si in c.super_instances:
+            cluster_plot.line('x', 'y', source=dict(x=range(data.shape[1]), y=data[si.representative_idx, :]), line_width=2, line_color='red')
+
         plots.append(cluster_plot)
 
+    '''
+
+    for c in set(cluster_labels):
+        c_idxs = np.where(np.array(cluster_labels) == c)[0]
+        cur_data = data[c_idxs, :]
+
+        x_range = 0, cur_data.shape[1]
+        y_range = cur_data[1:].min(), cur_data[1:].max()
+
+        cluster_plot = figure(plot_width=plot_width, plot_height=plot_height, x_range=x_range, y_range=y_range,
+                              toolbar_location=None)
+        cluster_plot.toolbar.logo = None
+
+        # actually make the plot
+        canvas = datashader.Canvas(x_range=x_range, y_range=y_range,
+                                   plot_height=plot_height, plot_width=plot_width)
+
+        # reformat the data into an appropriate DataFrame
+        dfs = []
+        split = pd.DataFrame({'x': [np.nan]})
+        # for i in range(len(data)-1):
+        for i in range(len(cur_data)):
+            x = list(range(cur_data.shape[1]))
+            y = cur_data[i]
+            df3 = pd.DataFrame({'x': x, 'y': y})
+            dfs.append(df3)
+            dfs.append(split)
+        df2 = pd.concat(dfs, ignore_index=True)
+
+        agg = canvas.line(df2, 'x', 'y', datashader.count())
+        img = datashader.transfer_functions.shade(agg, how='eq_hist')
+
+        cluster_plot.image_rgba(image=[img.data], x=x_range[0], y=y_range[0], dw=x_range[1] - x_range[0],
+                                dh=y_range[1] - y_range[0])
+
+        cluster_plot.line('x', 'y', source=dict(x=range(data.shape[1]), y=data[0,:]), line_width=1, line_color='red')
+
+        plots.append(cluster_plot)
+    '''
     bokeh_layout.children[2] = row(plots)
 
 

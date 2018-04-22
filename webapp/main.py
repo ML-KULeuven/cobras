@@ -15,6 +15,8 @@ import numpy as np
 import datashader
 import time
 
+import sys
+
 from bokeh.models.widgets import (Div)
 
 from cobras_ts.visualquerier import VisualQuerier
@@ -25,6 +27,8 @@ doc = curdoc()
 
 print(type(doc))
 
+
+print(sys.argv)
 
 def blocking_task():
     global query_answered
