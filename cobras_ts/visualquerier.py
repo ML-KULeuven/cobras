@@ -13,9 +13,19 @@ import pandas as pd
 
 
 @gen.coroutine
-def update(frame1, frame2, xs, ys1, ys2):
-    frame1.data_source.data = dict(x=xs, y=ys1)
-    frame2.data_source.data = dict(x=xs, y=ys2)
+def update(bokeh_layout, xs, ys1, ys2):
+
+    # This is the only thing that does not give glitches: making new figures each time.
+    # Much better would probably be to put a figure once, and simply update the plot data.
+    # This does not work, however, lines seem to frequently disappear for some unknown reason.
+
+    ts1 = figure(x_axis_type="datetime", plot_width=250, plot_height=120, toolbar_location=None)
+    ts2 = figure(x_axis_type="datetime", plot_width=250, plot_height=120, toolbar_location=None)
+
+    ts1.line('x', 'y', source=dict(x=xs, y=ys1), line_width=1)
+    ts2.line('x', 'y', source=dict(x=xs, y=ys2), line_width=1)
+
+    bokeh_layout.children[0].children[1].children[1] = row(ts1,ts2)
 
 
 @gen.coroutine
@@ -67,13 +77,10 @@ def update_clustering(bokeh_layout, data, clustering):
 
 class VisualQuerier(Querier):
 
-    def __init__(self, data, bokeh_doc, bokeh_layout, line1, line2):
+    def __init__(self, data, bokeh_doc, bokeh_layout):
         super(VisualQuerier, self).__init__()
 
         self.data = data
-
-        self.line1 = line1
-        self.line2 = line2
 
         self.bokeh_doc = bokeh_doc
         self.bokeh_layout = bokeh_layout
@@ -81,13 +88,13 @@ class VisualQuerier(Querier):
         self.query_answered = False
         self.query_result = None
 
+
     def query_points(self, idx1, idx2):
 
         print("querying points.. ")
         time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
-            partial(update, frame1=self.line1, frame2=self.line2,
-                    xs=list(range(self.data.shape[1])), ys1=self.data[idx1, :], ys2=self.data[idx2, :]))
+            partial(update, bokeh_layout=self.bokeh_layout, xs=list(range(self.data.shape[1])), ys1=self.data[idx1, :], ys2=self.data[idx2, :]))
 
         while not self.query_answered:
             pass
@@ -98,6 +105,6 @@ class VisualQuerier(Querier):
     def update_clustering(self, clustering):
         time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
-            partial(update_clustering, bokeh_layout=self.bokey_layout, data=self.data, clustering=clustering))
+            partial(update_clustering, bokeh_layout=self.bokeh_layout, data=self.data, clustering=clustering))
 
 

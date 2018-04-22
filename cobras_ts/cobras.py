@@ -51,7 +51,6 @@ class COBRAS:
         # the super-instance is split, and a new cluster is created for each of the newly created superinstances
         initial_k = self.determine_split_level(initial_superinstance)
 
-
         superinstances = self.split_superinstance(initial_superinstance,initial_k)
         self.clustering = Clustering([])
         for si in superinstances:
@@ -71,7 +70,7 @@ class COBRAS:
             if to_split is None:
                 break
 
-            #self.querier.update_clustering(self.clustering.construct_cluster_labeling())
+            self.querier.update_clustering(self.clustering.construct_cluster_labeling())
 
             originating_cluster.super_instances.remove(to_split)
             if len(originating_cluster.super_instances) == 0:
