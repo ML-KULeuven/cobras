@@ -67,7 +67,13 @@ class COBRAS:
 
         while len(self.ml) + len(self.cl) < self.max_questions:
 
+            print("start of while,  this many pionts in the clustering: ")
+            print(sum([len(cluster.get_all_points()) for cluster in self.clustering.clusters]))
+
             self.querier.update_clustering(self.clustering)
+
+            print("after plotting,  this many pionts in the clustering: ")
+            print(sum([len(cluster.get_all_points()) for cluster in self.clustering.clusters]))
 
             to_split, originating_cluster = self.identify_superinstance_to_split()
             if to_split is None:
@@ -98,6 +104,9 @@ class COBRAS:
                 self.clustering.clusters.extend(new_clusters)
 
             self.merge_containing_clusters(starting_level=False)
+
+            print("end of while, this many pionts in the clustering: ")
+            print(sum([len(cluster.get_all_points()) for cluster in self.clustering.clusters]))
 
         return [clust for clust, _, _ in self.results], [runtime for _, runtime, _ in self.results], self.ml, self.cl
 

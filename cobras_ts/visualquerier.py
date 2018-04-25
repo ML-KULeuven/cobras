@@ -35,19 +35,20 @@ def cluster_is_pure(metadata, attr, old_value, new_value):
     metadata["cluster"].is_pure = not metadata["cluster"].is_pure
 
 @gen.coroutine
-def update_clustering(bokeh_layout, data, clustering, querier):
+def update_clustering(bokeh_layout, data, clustering, cluster_indices, querier):
 
 
 
-    plot_width = int(800 / len(clustering.clusters))
+    plot_width = int(800 / len(clustering))
     plot_height = int(plot_width / 2)
 
     plots = []
     buttons = []
 
     cols = []
-    for c_idx, c in enumerate(clustering.clusters):
-        c_idxs = c.get_all_points()
+
+    for c, c_idxs in zip(clustering, cluster_indices):
+
         cur_data = data[c_idxs, :]
 
         x_range = 0, cur_data.shape[1]
@@ -85,11 +86,10 @@ def update_clustering(bokeh_layout, data, clustering, querier):
 
         plots.append(cluster_plot)
 
-        button = Toggle(label="This cluster is pure, stop querying.")
+        button = Toggle(label="This cluster is complete, stop querying.")
         button.on_change("active", partial(cluster_is_pure, {"cluster" : c}))
 
         cols.append(column(cluster_plot,button))
-
 
 
     bokeh_layout.children[2] = row(cols)
@@ -107,6 +107,7 @@ class VisualQuerier(Querier):
 
         self.query_answered = False
         self.query_result = None
+
 
         self.cluster_marked_as_pure = collections.defaultdict(lambda: False)
 
@@ -126,8 +127,19 @@ class VisualQuerier(Querier):
 
     def update_clustering(self, clustering):
 
+        # we have to make a copy of the list of clusters here, as clusters are removed from this list in the cobras
+        # code, which runs concurrently with the update call
+        # i.e. the list of clusters is not always complete during cobras execution, but it has to be for plotting
+        # the same holds for the list of super-instances, i.e. super-instances can be removed from their cluster
+        # during cobras execution, that is why we keep a list of instance indices for each cluster
+        clusters = []
+        cluster_indices = []
+        for cluster in clustering.clusters:
+            clusters.append(cluster)
+            cluster_indices.append(cluster.get_all_points())
+
         time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
-            partial(update_clustering, bokeh_layout=self.bokeh_layout, data=self.data, clustering=clustering, querier=self))
+            partial(update_clustering, bokeh_layout=self.bokeh_layout, data=self.data, clustering=clusters, cluster_indices=cluster_indices, querier=self))
 
 
