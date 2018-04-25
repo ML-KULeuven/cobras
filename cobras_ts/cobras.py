@@ -66,11 +66,14 @@ class COBRAS:
         self.merge_containing_clusters(starting_level=True)
 
         while len(self.ml) + len(self.cl) < self.max_questions:
+
+            self.querier.update_clustering(self.clustering)
+
             to_split, originating_cluster = self.identify_superinstance_to_split()
             if to_split is None:
                 break
 
-            self.querier.update_clustering(self.clustering)
+
 
             originating_cluster.super_instances.remove(to_split)
             if len(originating_cluster.super_instances) == 0:
@@ -178,7 +181,10 @@ class COBRAS:
 
         merged = True
         while merged and len(self.ml) + len(self.cl) < self.max_questions:
-            cluster_pairs = itertools.combinations(self.clustering.clusters, 2)
+
+            clusters_to_consider = [cluster for cluster in self.clustering.clusters if not cluster.is_pure]
+
+            cluster_pairs = itertools.combinations(clusters_to_consider, 2)
             cluster_pairs = [x for x in cluster_pairs if
                              not x[0].cannot_link_to_other_cluster(x[1], self.cl)]
             cluster_pairs = sorted(cluster_pairs, key=lambda x: x[0].distance_to(x[1]))
@@ -236,29 +242,31 @@ class COBRAS:
 
 
     def identify_superinstance_to_split(self):
-        superinstances = self.clustering.get_super_instances()
 
-        if len(superinstances) == 1:
-            return superinstances[0], self.clustering.clusters[0]
+        if len(self.clustering.clusters) == 1 and len(self.clustering.clusters[0].super_instances) == 1:
+            return self.clustering.clusters[0].super_instances[0], self.clustering.clusters[0]
 
         superinstance_to_split = None
         max_heur = -np.inf
+        originating_cluster = None
 
-        for sis_id, superinstance in enumerate(superinstances):
-            if superinstance.tried_splitting:
+        for cluster in self.clustering.clusters:
+
+            if cluster.is_pure:
                 continue
 
-            if len(superinstance.indices) > max_heur:
-                superinstance_to_split = superinstance
-                max_heur = len(superinstance.indices)
+            for superinstance in cluster.super_instances:
+                if superinstance.tried_splitting:
+                    continue
+
+                if len(superinstance.indices) > max_heur:
+                    superinstance_to_split = superinstance
+                    max_heur = len(superinstance.indices)
+                    originating_cluster = cluster
 
         if superinstance_to_split is None:
             return None, None
 
-        originating_cluster = None
-        for cluster in self.clustering.clusters:
-            if superinstance_to_split in cluster.super_instances:
-                originating_cluster = cluster
 
         return superinstance_to_split, originating_cluster
 

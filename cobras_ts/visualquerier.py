@@ -4,13 +4,14 @@ from tornado import gen
 from bokeh.models.renderers import GlyphRenderer
 from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure, show
-from bokeh.layouts import row
+from bokeh.layouts import row, column
 from functools import partial
 import time
 import numpy as np
 import datashader
 import pandas as pd
-
+from bokeh.models import Button, CheckboxGroup, Toggle
+import collections
 
 @gen.coroutine
 def update(bokeh_layout, xs, ys1, ys2):
@@ -28,8 +29,13 @@ def update(bokeh_layout, xs, ys1, ys2):
     bokeh_layout.children[0].children[1].children[1] = row(ts1,ts2)
 
 
+def cluster_is_pure(metadata, attr, old_value, new_value):
+    print("toggeling cluster purity")
+
+    metadata["cluster"].is_pure = not metadata["cluster"].is_pure
+
 @gen.coroutine
-def update_clustering(bokeh_layout, data, clustering):
+def update_clustering(bokeh_layout, data, clustering, querier):
 
 
 
@@ -37,8 +43,10 @@ def update_clustering(bokeh_layout, data, clustering):
     plot_height = int(plot_width / 2)
 
     plots = []
+    buttons = []
 
-    for c in clustering.clusters:
+    cols = []
+    for c_idx, c in enumerate(clustering.clusters):
         c_idxs = c.get_all_points()
         cur_data = data[c_idxs, :]
 
@@ -77,46 +85,14 @@ def update_clustering(bokeh_layout, data, clustering):
 
         plots.append(cluster_plot)
 
-    '''
+        button = Toggle(label="This cluster is pure, stop querying.")
+        button.on_change("active", partial(cluster_is_pure, {"cluster" : c}))
 
-    for c in set(cluster_labels):
-        c_idxs = np.where(np.array(cluster_labels) == c)[0]
-        cur_data = data[c_idxs, :]
+        cols.append(column(cluster_plot,button))
 
-        x_range = 0, cur_data.shape[1]
-        y_range = cur_data[1:].min(), cur_data[1:].max()
 
-        cluster_plot = figure(plot_width=plot_width, plot_height=plot_height, x_range=x_range, y_range=y_range,
-                              toolbar_location=None)
-        cluster_plot.toolbar.logo = None
 
-        # actually make the plot
-        canvas = datashader.Canvas(x_range=x_range, y_range=y_range,
-                                   plot_height=plot_height, plot_width=plot_width)
-
-        # reformat the data into an appropriate DataFrame
-        dfs = []
-        split = pd.DataFrame({'x': [np.nan]})
-        # for i in range(len(data)-1):
-        for i in range(len(cur_data)):
-            x = list(range(cur_data.shape[1]))
-            y = cur_data[i]
-            df3 = pd.DataFrame({'x': x, 'y': y})
-            dfs.append(df3)
-            dfs.append(split)
-        df2 = pd.concat(dfs, ignore_index=True)
-
-        agg = canvas.line(df2, 'x', 'y', datashader.count())
-        img = datashader.transfer_functions.shade(agg, how='eq_hist')
-
-        cluster_plot.image_rgba(image=[img.data], x=x_range[0], y=y_range[0], dw=x_range[1] - x_range[0],
-                                dh=y_range[1] - y_range[0])
-
-        cluster_plot.line('x', 'y', source=dict(x=range(data.shape[1]), y=data[0,:]), line_width=1, line_color='red')
-
-        plots.append(cluster_plot)
-    '''
-    bokeh_layout.children[2] = row(plots)
+    bokeh_layout.children[2] = row(cols)
 
 
 class VisualQuerier(Querier):
@@ -131,6 +107,8 @@ class VisualQuerier(Querier):
 
         self.query_answered = False
         self.query_result = None
+
+        self.cluster_marked_as_pure = collections.defaultdict(lambda: False)
 
 
     def query_points(self, idx1, idx2):
@@ -147,8 +125,9 @@ class VisualQuerier(Querier):
         return self.query_result
 
     def update_clustering(self, clustering):
+
         time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
-            partial(update_clustering, bokeh_layout=self.bokeh_layout, data=self.data, clustering=clustering))
+            partial(update_clustering, bokeh_layout=self.bokeh_layout, data=self.data, clustering=clustering, querier=self))
 
 
