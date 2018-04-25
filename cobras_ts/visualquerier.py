@@ -35,7 +35,7 @@ def cluster_is_pure(metadata, attr, old_value, new_value):
     metadata["cluster"].is_pure = not metadata["cluster"].is_pure
 
 @gen.coroutine
-def update_clustering(bokeh_layout, data, clustering, cluster_indices, querier):
+def update_clustering(bokeh_layout, data, clustering, cluster_indices, representatives):
 
 
 
@@ -47,7 +47,7 @@ def update_clustering(bokeh_layout, data, clustering, cluster_indices, querier):
 
     cols = []
 
-    for c, c_idxs in zip(clustering, cluster_indices):
+    for c, c_idxs, cluster_representatives in zip(clustering, cluster_indices, representatives):
 
         cur_data = data[c_idxs, :]
 
@@ -81,12 +81,12 @@ def update_clustering(bokeh_layout, data, clustering, cluster_indices, querier):
                                 dh=y_range[1] - y_range[0])
 
 
-        for si in c.super_instances:
-            cluster_plot.line('x', 'y', source=dict(x=range(data.shape[1]), y=data[si.representative_idx, :]), line_width=2, line_color='red')
+        for repr_idx in cluster_representatives:
+            cluster_plot.line('x', 'y', source=dict(x=range(data.shape[1]), y=data[repr_idx, :]), line_width=2, line_color='red')
 
         plots.append(cluster_plot)
 
-        button = Toggle(label="This cluster is complete, stop querying.")
+        button = Toggle(label="This cluster is complete, stop querying.", active=c.is_pure)
         button.on_change("active", partial(cluster_is_pure, {"cluster" : c}))
 
         cols.append(column(cluster_plot,button))
@@ -127,19 +127,18 @@ class VisualQuerier(Querier):
 
     def update_clustering(self, clustering):
 
-        # we have to make a copy of the list of clusters here, as clusters are removed from this list in the cobras
-        # code, which runs concurrently with the update call
-        # i.e. the list of clusters is not always complete during cobras execution, but it has to be for plotting
-        # the same holds for the list of super-instances, i.e. super-instances can be removed from their cluster
-        # during cobras execution, that is why we keep a list of instance indices for each cluster
+        # we basically have to cache everything here, as it all can be modified in the main cobras loop while
+        # the plotting code is running
         clusters = []
         cluster_indices = []
+        si_representatives = []
         for cluster in clustering.clusters:
             clusters.append(cluster)
             cluster_indices.append(cluster.get_all_points())
+            si_representatives.append([si.representative_idx for si in cluster.super_instances])
 
         time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
-            partial(update_clustering, bokeh_layout=self.bokeh_layout, data=self.data, clustering=clusters, cluster_indices=cluster_indices, querier=self))
+            partial(update_clustering, bokeh_layout=self.bokeh_layout, data=self.data, clustering=clusters, cluster_indices=cluster_indices, representatives=si_representatives))
 
 
