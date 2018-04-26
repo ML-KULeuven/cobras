@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 import logging
 import time
+import subprocess
 
 import numpy as np
 from sklearn import metrics
@@ -38,6 +39,7 @@ def main(argv=None):
     data_group.add_argument('--visual', action='store_true',
                             help='Use visual interface to query constraints if no labels are given')
 
+
     parser.add_argument('--budget', type=int, default=100,
                         help='Number of constraints to ask maximally')
     parser.add_argument('input', nargs=1, help='Dataset file')
@@ -71,7 +73,7 @@ def main(argv=None):
         series = data[:, nonlabelcols]
         labels = data[:, args.labelcol]
         if args.visual:
-            logger.error("Visual interface not yet available")
+            subprocess.call(["bokeh serve cobras_ts/webapp"], shell=True)
             sys.exit(1)
         else:
             from cobras_ts.labelquerier import LabelQuerier
@@ -101,4 +103,4 @@ def main(argv=None):
     print("Clustering:")
     print(clusterings)
     if args.labelcol is not None:
-        print("AR score = " + str(metrics.adjusted_rand_score(clusterings[-1], labels)))
+        print("ARI score = " + str(metrics.adjusted_rand_score(clusterings[-1], labels)))
