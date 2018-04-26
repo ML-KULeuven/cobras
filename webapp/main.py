@@ -51,7 +51,8 @@ df = df.drop(0,axis=1)
 ts = df.ix[0,:]
 
 
-
+loading = Div(text="""<h3>Loading...<h3>""", css_classes=[],
+width=100, height=100)
 
 
 
@@ -65,14 +66,21 @@ i = 0
 def mustlink_callback():
     global query_answered
     global querier
+    global entire_thing
     querier.query_answered = True
     querier.query_result = True
+
+    entire_thing.children[1].children[1].children[1] = loading
 
 def cannotlink_callback():
     global query_answered
     global querier
+    global entire_thing
     querier.query_answered = True
     querier.query_result = False
+
+    entire_thing.children[1].children[1].children[1] = loading
+
 
 # add a button widget and configure with the call back
 button_ml = Button(label="Yes (must-link)", button_type="success")
