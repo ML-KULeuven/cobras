@@ -1,10 +1,11 @@
 """
 Most of the clustering procedure is shared between COBRAS_dtw and COBRAS_kshape, this is captured in the COBRAS class.
 The following methods are specific to each variant:
-    - create_superinstance: super-instances for COBRAS_dtw and COBRAS_kshape are different, this method
-                            simply creates a super-instance of the appropriate type
-    - split_superinstance: this is also different or COBRAS_dtw and COBRAS_kshape, the first uses
-                           spectral clustering, the second kshape to split a super-instance
+
+- create_superinstance: super-instances for COBRAS_dtw and COBRAS_kshape are different, this method
+                        simply creates a super-instance of the appropriate type
+- split_superinstance: this is also different or COBRAS_dtw and COBRAS_kshape, the first uses
+                        spectral clustering, the second kshape to split a super-instance
 """
 
 import abc
@@ -19,6 +20,14 @@ from cobras_ts.clustering import Clustering
 
 class COBRAS:
     def __init__(self, data, querier, max_questions, train_indices=None):
+        """COBRAS clustering
+
+        :param data: Data set numpy array of size (nb_instances,nb_features)
+        :param querier: Querier object that answers whether instances are linked through a must-link or cannot-link.
+        :param max_questions: Maximum number of questions that are asked. Clustering stops after this.
+        :param train_indices:
+            Default: None
+        """
         self.data = data
         self.querier = querier
         self.max_questions = max_questions
@@ -36,6 +45,15 @@ class COBRAS:
         self.cl = None
 
     def cluster(self):
+        """Perform clustering.
+
+        :return: 4-tuple with:
+            * List of lists, each list represents the cluster labels in each iteration
+            * List of elapsed times, one per iteration
+            * List of used must-link constraints
+            * List of used cannot-link constraints
+        """
+        # TODO: Why is a cluster at each iteration kept. Expensive?
         self.start = time.time()
 
         # 'results' will contain tuples (cluster labels, elapsed time, number of pairwise constraints)
