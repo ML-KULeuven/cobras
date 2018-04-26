@@ -13,6 +13,9 @@ import pandas as pd
 import datashader
 import sys
 
+
+curdoc().title = "COBRAS-TS"
+
 loading = Div(text="""<h3>Loading...<h3>""", width=100, height=100)
 
 def mustlink_callback():

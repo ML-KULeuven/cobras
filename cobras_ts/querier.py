@@ -19,6 +19,3 @@ class Querier:
     def update_clustering_detailed(self, clustering):
         # not ideal? this has not too much to do with querying, it is only needed for the webapp
         return
-
-    def finished_indicating(self):
-        return False

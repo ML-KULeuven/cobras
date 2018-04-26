@@ -56,8 +56,6 @@ class COBRAS:
         # TODO: Why is a cluster at each iteration kept. Expensive?
         self.start = time.time()
 
-        print("Starting clustering!")
-
         # 'results' will contain tuples (cluster labels, elapsed time, number of pairwise constraints)
         # we will add an entry for each constraint that is queried
         self.results = [([0] * self.data.shape[0],0,0)]
@@ -89,15 +87,9 @@ class COBRAS:
 
             self.querier.update_clustering(self.clustering)
 
-            print("\n\n\n ************************** we are returning now from updating the clustering")
-
-
             to_split, originating_cluster = self.identify_superinstance_to_split()
             if to_split is None:
-
-                print("\n\n\n There are no super-instances to split!!")
                 break
-
 
 
             originating_cluster.super_instances.remove(to_split)
@@ -205,14 +197,6 @@ class COBRAS:
             return new_clusters
 
     def merge_containing_clusters(self, starting_level=False):
-
-        print("\n\nStarting a merging step, we have " + str(len(self.clustering.clusters)) + " clusters")
-        n_finished = 0
-        for c in self.clustering.clusters:
-            if c.is_finished:
-                n_finished += 1
-
-        print("this is the number of finished clusters: " + str(n_finished))
 
         start_clustering = self.results[-1][0]
 
