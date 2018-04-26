@@ -14,12 +14,18 @@ from bokeh.models import Button, CheckboxGroup, Toggle
 import collections
 from bokeh.models.widgets import Div
 
+
+colors = ["#009900", "#ff0000", "#cc6600", "#a0a0a0", "#00cccc", "#0066cc", "#0000cc"]
+
+
 @gen.coroutine
 def update(bokeh_layout, xs, ys1, ys2, iteration, num_queries):
 
-    topdiv = Div(text="<h1> COBRAS<sup>TS</sup> <br>  iteration " + str(iteration) + ", " + str(num_queries) + " queries answered</h1>", css_classes=['top_title_div'],
+    topdiv = Div(text="<font size=\"15\"> <b>COBRAS<sup>TS</sup></b> </font>  <br><font size=\"2\">  iteration:  " + str(iteration) + " <br> # queries answered: " + str(num_queries) + "</font>", css_classes=['top_title_div'],
         width=500, height=100)
-    bokeh_layout.children[0].children[0] = topdiv
+    bokeh_layout.children[0].children[0] = column(topdiv)
+
+
 
 
 
@@ -105,8 +111,8 @@ def update_clustering(querier, bokeh_layout, bokeh_doc, data, clustering, cluste
                                 dh=y_range[1] - y_range[0])
 
 
-        for repr_idx in cluster_representatives:
-            cluster_plot.line('x', 'y', source=dict(x=range(data.shape[1]), y=data[repr_idx, :]), line_width=2, line_color='red')
+        for i, repr_idx in enumerate(cluster_representatives):
+            cluster_plot.line('x', 'y', source=dict(x=range(data.shape[1]), y=data[repr_idx, :]), line_width=2, line_color=colors[i % len(colors)])
 
         plots.append(cluster_plot)
 

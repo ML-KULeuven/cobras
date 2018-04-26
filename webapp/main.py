@@ -23,6 +23,12 @@ from cobras_ts.visualquerier import VisualQuerier
 
 from bokeh.models import ColumnDataSource
 
+import random
+import numpy as np
+
+random.seed(123)
+np.random.seed(123)
+
 doc = curdoc()
 
 print(type(doc))
@@ -129,7 +135,7 @@ bla = row(p)
 
 
 
-topdiv = Div(text="""<h1> COBRAS<sup>TS</sup> <br>  iteration 1, 0 queries answered </h1>""", css_classes=['top_title_div'],
+topdiv = Div(text="""<h1> COBRAS<sup>TS</sup> <br>  iteration:  1 <br> # queries answered: 0 </h1>""", css_classes=['top_title_div'],
 width=500, height=100)
 
 div = Div(text="""<h2> The full dataset </h2>""", css_classes=['title_div'],
