@@ -73,7 +73,7 @@ def main(argv=None):
         series = data[:, nonlabelcols]
         labels = data[:, args.labelcol]
         if args.visual:
-            subprocess.call(["bokeh serve cobras_ts/webapp"], shell=True)
+            subprocess.call(["bokeh serve cobras_ts/webapp --args " + args.input[0]], shell=True)
             sys.exit(1)
         else:
             from cobras_ts.labelquerier import LabelQuerier

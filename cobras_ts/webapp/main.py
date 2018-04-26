@@ -34,19 +34,16 @@ doc = curdoc()
 print(type(doc))
 
 
-print(sys.argv)
+fn = sys.argv[1]
 
 def blocking_task():
     global query_answered
+    clusterer.cluster()
 
-    clusterings, runtimes, ml, cl = clusterer.cluster()
 
+df = pd.read_csv(fn,header=None)
 
-dataset = 'CBF'
-
-df = pd.read_csv('/home/toon/Downloads/UCR_TS_Archive_2015/' + dataset + '/' + dataset + '_TEST_SAMPLE',header=None)
-
-data = np.loadtxt('/home/toon/Downloads/UCR_TS_Archive_2015/' + dataset + '/' + dataset + '_TEST_SAMPLE', delimiter=',')
+data = np.loadtxt(fn, delimiter=',')
 series = data[:,1:]
 labels = data[:,0]
 
@@ -95,6 +92,8 @@ button_ml.on_click(mustlink_callback)
 button_cl = Button(label="No (cannot-link)", button_type="warning")
 button_cl.on_click(cannotlink_callback)
 
+
+print("after making the buttons")
 
 data = df.as_matrix()
 
@@ -170,6 +169,7 @@ entire_thing = column(row(topdiv),row(column(div,all_data_plot),column(div2,row(
 # put the button and plot in a layout and add to the document
 curdoc().add_root(entire_thing)
 
+print("do we get here?")
 
 
 querier = VisualQuerier(data, curdoc(), entire_thing)

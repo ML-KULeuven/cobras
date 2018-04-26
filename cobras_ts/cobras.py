@@ -56,6 +56,8 @@ class COBRAS:
         # TODO: Why is a cluster at each iteration kept. Expensive?
         self.start = time.time()
 
+        print("Starting clustering!")
+
         # 'results' will contain tuples (cluster labels, elapsed time, number of pairwise constraints)
         # we will add an entry for each constraint that is queried
         self.results = [([0] * self.data.shape[0],0,0)]
