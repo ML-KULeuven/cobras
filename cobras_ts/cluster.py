@@ -6,6 +6,7 @@ class Cluster:
     def __init__(self, super_instances):
         self.super_instances = super_instances
         self.is_pure = False # in the visual querier, the user can indicate that the entire cluster is pure
+        self.is_finished = False
 
     def distance_to(self, other_cluster):
         super_instance_pairs = itertools.product(self.super_instances, other_cluster.super_instances)

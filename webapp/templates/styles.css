@@ -7,6 +7,11 @@
               background: white;
              }
 
+
+.top_title_div {
+    margin-bottom: -25px;
+    width: 10%; float:left;
+}
 .title_div { 
     margin-bottom: -50px;
     width: 10%; float:left;

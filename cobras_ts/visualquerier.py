@@ -12,9 +12,16 @@ import datashader
 import pandas as pd
 from bokeh.models import Button, CheckboxGroup, Toggle
 import collections
+from bokeh.models.widgets import Div
 
 @gen.coroutine
-def update(bokeh_layout, xs, ys1, ys2):
+def update(bokeh_layout, xs, ys1, ys2, iteration, num_queries):
+
+    topdiv = Div(text="<h1> COBRAS<sup>TS</sup> <br>  iteration " + str(iteration) + ", " + str(num_queries) + " queries answered</h1>", css_classes=['top_title_div'],
+        width=500, height=100)
+    bokeh_layout.children[0].children[0] = topdiv
+
+
 
     # This is the only thing that does not give glitches: making new figures each time.
     # Much better would probably be to put a figure once, and simply update the plot data.
@@ -26,16 +33,33 @@ def update(bokeh_layout, xs, ys1, ys2):
     ts1.line('x', 'y', source=dict(x=xs, y=ys1), line_width=1)
     ts2.line('x', 'y', source=dict(x=xs, y=ys2), line_width=1)
 
-    bokeh_layout.children[0].children[1].children[1] = row(ts1,ts2)
+    bokeh_layout.children[1].children[1].children[1] = row(ts1,ts2)
 
 
 def cluster_is_pure(metadata, attr, old_value, new_value):
-    print("toggeling cluster purity")
-
     metadata["cluster"].is_pure = not metadata["cluster"].is_pure
 
+def cluster_is_finished(metadata, attr, old_value, new_value):
+    metadata["cluster"].is_finished = not metadata["cluster"].is_finished
+
+
 @gen.coroutine
-def update_clustering(bokeh_layout, data, clustering, cluster_indices, representatives):
+def remove_cluster_indicators(querier, bokeh_layout):
+    bokeh_layout.children[4] = row()
+
+    for col in bokeh_layout.children[3].children:
+        col.children[1] = row()
+        col.children[2] = row()
+
+    querier.finished_indicating = True
+
+def remove_cluster_indicators_callback(querier, bokeh_layout,bokeh_doc):
+    bokeh_doc.add_next_tick_callback(
+        partial(remove_cluster_indicators, querier=querier, bokeh_layout=bokeh_layout))
+
+
+@gen.coroutine
+def update_clustering(querier, bokeh_layout, bokeh_doc, data, clustering, cluster_indices, representatives):
 
 
 
@@ -86,13 +110,23 @@ def update_clustering(bokeh_layout, data, clustering, cluster_indices, represent
 
         plots.append(cluster_plot)
 
-        button = Toggle(label="This cluster is complete, stop querying.", active=c.is_pure)
+        button = Toggle(label="This cluster is pure.", active=c.is_pure)
         button.on_change("active", partial(cluster_is_pure, {"cluster" : c}))
 
-        cols.append(column(cluster_plot,button))
+        button2 = Toggle(label="This cluster is finished.", active=c.is_finished)
+        button2.on_change("active", partial(cluster_is_finished, {"cluster" : c}))
+
+        cols.append(column(cluster_plot,button,button2))
 
 
-    bokeh_layout.children[2] = row(cols)
+    bokeh_layout.children[3] = row(cols)
+
+    # add a button widget and configure with the call back
+    finished_indicating = Button(label="Show me more queries!",button_type="danger")
+    finished_indicating.on_click(partial(remove_cluster_indicators_callback, querier=querier, bokeh_layout=bokeh_layout, bokeh_doc=bokeh_doc))
+
+    bokeh_layout.children[4] = row(finished_indicating)
+
 
 
 class VisualQuerier(Querier):
@@ -108,24 +142,40 @@ class VisualQuerier(Querier):
         self.query_answered = False
         self.query_result = None
 
+        self.iteration = 0
+        self.n_queries = 0
+
 
         self.cluster_marked_as_pure = collections.defaultdict(lambda: False)
+
+        self.finished_indicating = False
 
 
     def query_points(self, idx1, idx2):
 
+
         print("querying points.. ")
         time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
-            partial(update, bokeh_layout=self.bokeh_layout, xs=list(range(self.data.shape[1])), ys1=self.data[idx1, :], ys2=self.data[idx2, :]))
+            partial(update, bokeh_layout=self.bokeh_layout, xs=list(range(self.data.shape[1])), ys1=self.data[idx1, :], ys2=self.data[idx2, :], iteration=self.iteration, num_queries=self.n_queries))
 
         while not self.query_answered:
             pass
         self.query_answered = False
 
+        self.n_queries += 1
+
+
         return self.query_result
 
+    def finished_indicating(self):
+        return self.finished_indicating
+
     def update_clustering(self, clustering):
+
+        self.finished_indicating = False
+
+
 
         # we basically have to cache everything here, as it all can be modified in the main cobras loop while
         # the plotting code is running
@@ -139,6 +189,11 @@ class VisualQuerier(Querier):
 
         time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
-            partial(update_clustering, bokeh_layout=self.bokeh_layout, data=self.data, clustering=clusters, cluster_indices=cluster_indices, representatives=si_representatives))
+            partial(update_clustering, querier=self, bokeh_layout=self.bokeh_layout, bokeh_doc=self.bokeh_doc, data=self.data, clustering=clusters, cluster_indices=cluster_indices, representatives=si_representatives))
 
+        while not self.finished_indicating:
+            # this is to prevent cobras from continuing
+            pass
+
+        self.iteration += 1
 

@@ -67,16 +67,15 @@ class COBRAS:
 
         while len(self.ml) + len(self.cl) < self.max_questions:
 
-            print("start of while,  this many pionts in the clustering: ")
-            print(sum([len(cluster.get_all_points()) for cluster in self.clustering.clusters]))
-
             self.querier.update_clustering(self.clustering)
 
-            print("after plotting,  this many pionts in the clustering: ")
-            print(sum([len(cluster.get_all_points()) for cluster in self.clustering.clusters]))
+            print("\n\n\n ************************** we are returning now from updating the clustering")
+
 
             to_split, originating_cluster = self.identify_superinstance_to_split()
             if to_split is None:
+
+                print("\n\n\n There are no super-instances to split!!")
                 break
 
 
@@ -88,6 +87,8 @@ class COBRAS:
             split_level = self.determine_split_level(to_split)
             new_super_instances = self.split_superinstance(to_split, split_level)
             new_clusters = self.add_new_clusters_from_split(new_super_instances)
+
+
 
             if not new_clusters:
                 # it is possible that splitting a super-instance does not lead to a new cluster:
@@ -105,8 +106,6 @@ class COBRAS:
 
             self.merge_containing_clusters(starting_level=False)
 
-            print("end of while, this many pionts in the clustering: ")
-            print(sum([len(cluster.get_all_points()) for cluster in self.clustering.clusters]))
 
         return [clust for clust, _, _ in self.results], [runtime for _, runtime, _ in self.results], self.ml, self.cl
 
@@ -186,12 +185,21 @@ class COBRAS:
             return new_clusters
 
     def merge_containing_clusters(self, starting_level=False):
+
+        print("\n\nStarting a merging step, we have " + str(len(self.clustering.clusters)) + " clusters")
+        n_finished = 0
+        for c in self.clustering.clusters:
+            if c.is_finished:
+                n_finished += 1
+
+        print("this is the number of finished clusters: " + str(n_finished))
+
         start_clustering = self.results[-1][0]
 
         merged = True
         while merged and len(self.ml) + len(self.cl) < self.max_questions:
 
-            clusters_to_consider = [cluster for cluster in self.clustering.clusters if not cluster.is_pure]
+            clusters_to_consider = [cluster for cluster in self.clustering.clusters if not cluster.is_finished]
 
             cluster_pairs = itertools.combinations(clusters_to_consider, 2)
             cluster_pairs = [x for x in cluster_pairs if
@@ -262,6 +270,9 @@ class COBRAS:
         for cluster in self.clustering.clusters:
 
             if cluster.is_pure:
+                continue
+
+            if cluster.is_finished:
                 continue
 
             for superinstance in cluster.super_instances:

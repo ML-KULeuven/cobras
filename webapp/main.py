@@ -120,7 +120,8 @@ bla = row(p)
 
 
 
-topdiv = Div(text="""<h1> COBRAS<sup>TS</sup> demo</h1>""", css_classes=['title_div'],
+
+topdiv = Div(text="""<h1> COBRAS<sup>TS</sup> <br>  iteration 1, 0 queries answered </h1>""", css_classes=['top_title_div'],
 width=500, height=100)
 
 div = Div(text="""<h2> The full dataset </h2>""", css_classes=['title_div'],
@@ -132,6 +133,15 @@ width=500, height=100)
 div3 = Div(text="""<h2> The (intermediate) clustering </h2>""", css_classes=['title_div'],
 width=400, height=100)
 
+
+div4 = Div(text="""placeholder""", css_classes=['title_div'],
+width=400, height=100)
+
+div5 = Div(text="""""", css_classes=['title_div'],
+width=400, height=100)
+
+
+
 ts1 = figure(x_axis_type="datetime", plot_width=250, plot_height=120, toolbar_location=None)
 #source1 = ColumnDataSource(data=dict(x=range(data.shape[1]), y=[0]*data.shape[1])) # for some mysterious reason we have to plot a real line here ?! not ideal
 #line1 = ts1.line('x', 'y', source=source1, line_width=1)
@@ -141,7 +151,7 @@ ts2 = figure(x_axis_type="datetime", plot_width=250, plot_height=120, toolbar_lo
 #line2 = ts2.line('x', 'y', source=source2, line_width=1)
 
 
-entire_thing = column(row(column(div,all_data_plot),column(div2,row(ts1,ts2),column(button_ml,button_cl))), div3, bla)
+entire_thing = column(row(topdiv),row(column(div,all_data_plot),column(div2,row(ts1,ts2),column(button_ml,button_cl))), div3, bla, div5)
 
 # put the button and plot in a layout and add to the document
 curdoc().add_root(entire_thing)
