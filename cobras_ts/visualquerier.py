@@ -11,7 +11,6 @@ import time
 import numpy as np
 import datashader
 import pandas as pd
-import collections
 
 
 colors = ["#009900", "#ff0000", "#cc6600", "#a0a0a0", "#00cccc", "#0066cc", "#0000cc"]
