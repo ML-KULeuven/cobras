@@ -49,8 +49,8 @@ query_answered = False
 fn = sys.argv[1]
 doc = curdoc()
 
+# TODO: We should reuse cli.prepare_data() here, it is now hardcoded for one case
 df = pd.read_csv(fn,header=None)
-
 
 labels = df.ix[:,0]
 df = df.drop(0,axis=1)

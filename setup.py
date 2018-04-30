@@ -130,7 +130,13 @@ setup(
     extras_require={  # Optional
         'dev': ['check-manifest', 'sphinx_rtd_theme'],
         'test': ['coverage'],
+        'gui': ['bokeh', 'cloudpickle', 'datashader==0.6.5']
     },
+    # Requires to add the argument --process-dependency-links when invoking pip
+    # A requirements.txt file allows for urls
+    dependency_links=[
+        "git+ssh://git@github.com/bokeh/datashader.git@0.6.5#egg=datashader-0.6.5"
+    ],
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.

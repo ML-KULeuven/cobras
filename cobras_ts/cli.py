@@ -18,6 +18,61 @@ Copyright 2018 KU Leuven, DTAI Research Group.
 """
 
 
+def prepare_data(inputs, format, labelcol, **kwargs):
+    """Read dataset.
+
+    :param inputs: List of filepaths
+    :param format: Type of datafile (choices are "csv")
+    :param labelcol: Integer or none
+    :return: (series, labels)
+    """
+    data_fn = Path(inputs[0])
+    data_format = None
+    if format is None:
+        if data_fn.suffix == '.csv':
+            data_format = 'csv'
+    else:
+        data_format = format
+
+    if data_format == 'csv':
+        data = np.loadtxt(str(data_fn), delimiter=',')
+    else:
+        raise Exception("Unknown file format (use the --format argument)")
+
+    if labelcol is None:
+        series = data
+        labels = None
+    else:
+        nonlabelcols = list(idx for idx in range(data.shape[1]) if idx != labelcol)
+        series = data[:, nonlabelcols]
+        labels = data[:, labelcol]
+    return series, labels
+
+
+def prepare_clusterer(dist, series, querier, budget, dtw_window=None, dtw_alpha=None, **kwargs):
+    """
+
+    :param dist: Type of distance (options: "dtw", "kshape")
+    :return:
+    """
+    if dist == 'dtw':
+        from dtaidistance import dtw
+        from cobras_ts.cobras_dtw import COBRAS_DTW
+        window = dtw_window
+        alpha = dtw_alpha
+        dists = dtw.distance_matrix(series, window=int(0.01 * window * series.shape[1]))
+        dists[dists == np.inf] = 0
+        dists = dists + dists.T - np.diag(np.diag(dists))
+        affinities = np.exp(-dists * alpha)
+        clusterer = COBRAS_DTW(affinities, querier, budget)
+    elif dist == 'kshape':
+        from cobras_ts.cobras_kshape import COBRAS_kShape
+        clusterer = COBRAS_kShape(series, querier, budget)
+    else:
+        raise Exception("Unknown distance type: {}".format(dist))
+    return clusterer
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=description,
                                      epilog=epilog)
@@ -39,61 +94,29 @@ def main(argv=None):
     data_group.add_argument('--visual', action='store_true',
                             help='Use visual interface to query constraints if no labels are given')
 
-
     parser.add_argument('--budget', type=int, default=100,
                         help='Number of constraints to ask maximally')
-    parser.add_argument('input', nargs=1, help='Dataset file')
+    parser.add_argument('inputs', nargs=1, help='Dataset file')
     args = parser.parse_args(argv)
 
     logger.setLevel(max(logging.WARNING - 10 * args.verbose, logging.DEBUG))
     logger.addHandler(logging.StreamHandler(sys.stdout))
 
-    budget = args.budget
+    if args.visual:
+        # TODO: check with Toon, this was in labelcol != none?
+        subprocess.call(["bokeh serve cobras_ts/webapp --args " + args.inputs[0]], shell=True)
+        sys.exit(1)
 
-    data_fn = Path(args.input[0])
-    data_format = None
-    if args.format is None:
-        if data_fn.suffix == '.csv':
-            data_format = 'csv'
-    else:
-        data_format = args.format
-
-    if data_format == 'csv':
-        data = np.loadtxt(str(data_fn), delimiter=',')
-    else:
-        raise Exception("Unknown file format (use the --format argument)")
+    series, labels = prepare_data(**vars(args))
 
     if args.labelcol is None:
         from cobras_ts.commandlinequerier import CommandLineQuerier
-        series = data
-        labels = None
         querier = CommandLineQuerier()
     else:
-        nonlabelcols = list(idx for idx in range(data.shape[1]) if idx != args.labelcol)
-        series = data[:, nonlabelcols]
-        labels = data[:, args.labelcol]
-        if args.visual:
-            subprocess.call(["bokeh serve cobras_ts/webapp --args " + args.input[0]], shell=True)
-            sys.exit(1)
-        else:
-            from cobras_ts.labelquerier import LabelQuerier
-            querier = LabelQuerier(labels)
+        from cobras_ts.labelquerier import LabelQuerier
+        querier = LabelQuerier(labels)
 
-    if args.dist == 'dtw':
-        from dtaidistance import dtw
-        from cobras_ts.cobras_dtw import COBRAS_DTW
-        window = args.dtw_window
-        alpha = args.dtw_alpha
-        dists = dtw.distance_matrix(series, window=int(0.01 * window * series.shape[1]))
-        dists[dists == np.inf] = 0
-        dists = dists + dists.T - np.diag(np.diag(dists))
-        affinities = np.exp(-dists * alpha)
-        clusterer = COBRAS_DTW(affinities, querier, budget)
-    elif args.dist == 'kshape':
-        from cobras_ts.cobras_kshape import COBRAS_kShape
-        clusterer = COBRAS_kShape(series, querier, budget)
-    else:
-        raise Exception("Unknown distance type: {}".format(args.dist))
+    clusterer = prepare_clusterer(series=series, querier=querier, **vars(args))
 
     logger.info("Start clustering ...")
     start_time = time.time()
