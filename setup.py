@@ -130,8 +130,8 @@ setup(
     extras_require={  # Optional
         'dev': ['check-manifest', 'sphinx_rtd_theme'],
         'test': ['coverage'],
-        'gui': ['bokeh', 'cloudpickle',
-                'pip @ git+ssh://git@github.com/bokeh/datashader.git@0.6.5#egg=datashader-0.6.5']
+        'gui': ['bokeh', 'cloudpickle', 'datashader']  # datashader will throw error if not yet installed
+         # 'pip @ git+ssh://git@github.com/bokeh/datashader.git@0.6.5#egg=datashader-0.6.5']
     },
 
     # If there are data files included in your packages that need to be

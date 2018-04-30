@@ -2,8 +2,9 @@ import argparse
 import sys
 from pathlib import Path
 import logging
-import time
 import subprocess
+import time
+import platform
 
 import numpy as np
 from sklearn import metrics
@@ -110,7 +111,14 @@ def main(argv=None):
 
     if args.visual:
         # TODO: check with Toon, this was in labelcol != none?
-        subprocess.call(["bokeh serve cobras_ts/webapp --args " + args.inputs[0]], shell=True)
+        if platform.system() == "Darwin":
+            # It's a Mac
+            logger.info("Opening http://localhost:5006/webapp")
+            subprocess.check_call(["open", "http://localhost:5006/webapp"])
+        webapp_dir = Path(__file__).parent / "webapp"
+        logger.debug(f"Opening bokeh webapp at {webapp_dir}")
+        # TODO: All arguments should be passed to webapp
+        subprocess.check_call(["bokeh", "serve", str(webapp_dir), "--args", args.inputs[0]])
         sys.exit(1)
 
     series, labels = prepare_data(**vars(args))
