@@ -18,21 +18,21 @@ Copyright 2018 KU Leuven, DTAI Research Group.
 """
 
 
-def prepare_data(inputs, format, labelcol, **kwargs):
-    """Read dataset.
+def prepare_data(inputs, fileformat, labelcol, **_kwargs):
+    """Read dataset based on the arguments given by the user.
 
     :param inputs: List of filepaths
-    :param format: Type of datafile (choices are "csv")
+    :param fileformat: Type of datafile (choices are "csv")
     :param labelcol: Integer or none
     :return: (series, labels)
     """
     data_fn = Path(inputs[0])
     data_format = None
-    if format is None:
+    if fileformat is None:
         if data_fn.suffix == '.csv':
             data_format = 'csv'
     else:
-        data_format = format
+        data_format = fileformat
 
     if data_format == 'csv':
         data = np.loadtxt(str(data_fn), delimiter=',')
@@ -49,11 +49,16 @@ def prepare_data(inputs, format, labelcol, **kwargs):
     return series, labels
 
 
-def prepare_clusterer(dist, series, querier, budget, dtw_window=None, dtw_alpha=None, **kwargs):
-    """
+def prepare_clusterer(dist, series, querier, budget, dtw_window=None, dtw_alpha=None, **_kwargs):
+    """Create a clusterer based on the arguments given by the user.
 
     :param dist: Type of distance (options: "dtw", "kshape")
-    :return:
+    :param series: List of sequences
+    :param querier: Querier object
+    :param budget: Max number of queries (passed to querier object)
+    :param dtw_window: window parameter for DTW  (passed to querier object)
+    :param dtw_alpha: Alpha paramter for DTW  (passed to querier object)
+    :return: Clusterer object
     """
     if dist == 'dtw':
         from dtaidistance import dtw
@@ -63,6 +68,7 @@ def prepare_clusterer(dist, series, querier, budget, dtw_window=None, dtw_alpha=
         dists = dtw.distance_matrix(series, window=int(0.01 * window * series.shape[1]))
         dists[dists == np.inf] = 0
         dists = dists + dists.T - np.diag(np.diag(dists))
+        # noinspection PyUnresolvedReferences
         affinities = np.exp(-dists * alpha)
         clusterer = COBRAS_DTW(affinities, querier, budget)
     elif dist == 'kshape':
@@ -88,7 +94,7 @@ def main(argv=None):
                             help='Compute affinity from distance: affinity = exp(-dist * alpha)')
 
     data_group = parser.add_argument_group("dataset arguments")
-    data_group.add_argument('--format', choices=['csv'], help='Dataset format')
+    data_group.add_argument('--format', dest='fileformat', choices=['csv'], help='Dataset format')
     data_group.add_argument('--labelcol', metavar='INT', type=int,
                             help='Column with labels')
     data_group.add_argument('--visual', action='store_true',
