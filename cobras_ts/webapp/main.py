@@ -10,8 +10,14 @@ from cobras_ts.cobras_kshape import COBRAS_kShape
 import random
 import numpy as np
 import pandas as pd
-import datashader
 import sys
+
+try:
+    import datashader
+except ImportError:
+    print("The datashader package needs to be installed from source to use the GUI:\n"
+          "$ pip install git+ssh://git@github.com/bokeh/datashader.git@0.6.5#egg=datashader-0.6.5")
+    sys.exit(1)
 
 
 curdoc().title = "COBRAS-TS"

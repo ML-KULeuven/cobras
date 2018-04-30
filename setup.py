@@ -117,7 +117,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['dtaidistance','kshape','numpy','scikit-learn[alldeps]'],  # Optional
+    install_requires=['dtaidistance', 'kshape', 'numpy', 'scikit-learn[alldeps]'],  # Optional
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
@@ -130,8 +130,9 @@ setup(
     extras_require={  # Optional
         'dev': ['check-manifest', 'sphinx_rtd_theme'],
         'test': ['coverage'],
-        'gui': ['bokeh', 'cloudpickle', 'datashader']  # datashader will throw error if not yet installed
-         # 'pip @ git+ssh://git@github.com/bokeh/datashader.git@0.6.5#egg=datashader-0.6.5']
+        'gui': ['bokeh', 'cloudpickle']  # , 'datashader']  # datashader has not pipy entry
+        # url dependencies are note allowed anymore in pip 10
+        # 'pip @ git+ssh://git@github.com/bokeh/datashader.git@0.6.5#egg=datashader-0.6.5']
     },
 
     # If there are data files included in your packages that need to be
