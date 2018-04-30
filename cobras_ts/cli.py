@@ -111,14 +111,15 @@ def main(argv=None):
 
     if args.visual:
         # TODO: check with Toon, this was in labelcol != none?
-        if platform.system() == "Darwin":
-            # It's a Mac
-            logger.info("Opening http://localhost:5006/webapp")
-            subprocess.check_call(["open", "http://localhost:5006/webapp"])
+        # if platform.system() == "Darwin":
+        #     # It's a Mac
+        #     logger.info("Opening http://localhost:5006/webapp")
+        #     subprocess.check_call(["open", "http://localhost:5006/webapp"])
         webapp_dir = Path(__file__).parent / "webapp"
         logger.debug(f"Opening bokeh webapp at {webapp_dir}")
         # TODO: All arguments should be passed to webapp
-        subprocess.check_call(["bokeh", "serve", str(webapp_dir), "--args", args.inputs[0]])
+        subprocess.check_call(["bokeh", "serve", "--show", str(webapp_dir), "--args", args.inputs[0]])
+        logger.info("Bokeh server closed")
         sys.exit(1)
 
     series, labels = prepare_data(**vars(args))
