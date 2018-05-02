@@ -20,7 +20,7 @@ COBRAS_TS supports three modes for constraint elicitation:
 
 .. class:: no-web
 
-    .. image:: raw/master/images/cobras_ts_demo_resized.png
+    .. image:: ../../raw/master/images/cobras_ts_demo_resized.png
         :alt: COBRAS^TS for interactive time series clustering
         :width: 5%
         :align: center
