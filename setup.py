@@ -130,7 +130,8 @@ setup(
     extras_require={  # Optional
         'dev': ['check-manifest', 'sphinx_rtd_theme'],
         'test': ['coverage'],
-        'gui': ['bokeh', 'cloudpickle']  # , 'datashader']  # datashader has not pipy entry
+        'gui': ['bokeh', 'cloudpickle', 'datashader']  # datashader has no pipy entry
+        # include --find-links https://people.cs.kuleuven.be/wannes.meert/pip/pip.html
         # url dependencies are note allowed anymore in pip 10
         # 'pip @ git+ssh://git@github.com/bokeh/datashader.git@0.6.5#egg=datashader-0.6.5']
     },
