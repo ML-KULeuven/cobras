@@ -19,7 +19,7 @@ colors = ["#009900", "#ff0000", "#cc6600", "#a0a0a0", "#00cccc", "#0066cc", "#00
 @gen.coroutine
 def update(bokeh_layout, xs, ys1, ys2, iteration, num_queries):
 
-    topdiv = Div(text="<font size=\"15\"> <b>COBRAS<sup>TS</sup></b> </font>  <br><font size=\"2\">  iteration:  " + str(iteration) + " <br> # queries answered: " + str(num_queries) + "</font>", css_classes=['top_title_div'],
+    topdiv = Div(text="<font size=\"15\"> <b>COBRAS<sup>TS</sup></b> </font>  <br><font size=\"2\">  # queries answered: " + str(num_queries) + "</font>", css_classes=['top_title_div'],
         width=500, height=100)
     bokeh_layout.children[0].children[0] = column(topdiv)
 
@@ -105,11 +105,16 @@ def update_clustering(querier, bokeh_layout, bokeh_doc, data, clustering, cluste
         button = Toggle(label="This cluster is pure.", active=c.is_pure)
         button.on_change("active", partial(cluster_is_pure, {"cluster" : c}))
 
-        button2 = Toggle(label="This cluster is finished.", active=c.is_finished)
+        button2 = Toggle(label="This cluster is pure and complete.", active=c.is_finished)
         button2.on_change("active", partial(cluster_is_finished, {"cluster" : c}))
 
         cols.append(column(cluster_plot,button,button2))
 
+    topdiv = Div(
+        text="<font size=\"15\"> <b>COBRAS<sup>TS</sup></b> </font>  <br><font size=\"2\">  # queries answered: " + str(
+            querier.n_queries) + "</font>", css_classes=['top_title_div'],
+        width=500, height=100)
+    bokeh_layout.children[0].children[0] = column(topdiv)
 
     bokeh_layout.children[3] = row(cols)
 
@@ -139,7 +144,7 @@ class VisualQuerier(Querier):
 
     def query_points(self, idx1, idx2):
 
-        time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
+        time.sleep(0.8)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
             partial(update, bokeh_layout=self.bokeh_layout, xs=list(range(self.data.shape[1])), ys1=self.data[idx1, :], ys2=self.data[idx2, :], iteration=self.iteration, num_queries=self.n_queries))
 
@@ -168,7 +173,7 @@ class VisualQuerier(Querier):
             cluster_indices.append(cluster.get_all_points())
             si_representatives.append([si.representative_idx for si in cluster.super_instances])
 
-        time.sleep(0.5)  # to fix (?) mysterious issue with bokeh..
+        time.sleep(0.8)  # to fix (?) mysterious issue with bokeh..
         self.bokeh_doc.add_next_tick_callback(
             partial(update_clustering, querier=self, bokeh_layout=self.bokeh_layout, bokeh_doc=self.bokeh_doc, data=self.data, clustering=clusters, cluster_indices=cluster_indices, representatives=si_representatives))
 
