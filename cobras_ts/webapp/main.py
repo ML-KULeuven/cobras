@@ -1,17 +1,33 @@
+import os, sys
 from threading import Thread
 from bokeh.layouts import column, row
 from bokeh.models import Button
 from bokeh.plotting import curdoc, figure
 from bokeh.models.widgets import Div
 
-from cobras_ts.visualquerier import VisualQuerier
-from cobras_ts.cobras_kshape import COBRAS_kShape
+try:
+    import datashader
+except ImportError:
+    datashader = None
+    print("\n\nThe datashader package needs to be installed from source to use the GUI:\n"
+          "$ pip install git+ssh://git@github.com/bokeh/datashader.git@0.6.5#egg=datashader-0.6.5\n\n")
+if datashader is None:
+    sys.exit(1)
+
+try:
+    from cobras_ts.visualquerier import VisualQuerier
+    from cobras_ts.cobras_kshape import COBRAS_kShape
+except ImportError:
+    sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir, os.pardir))
+    from cobras_ts.visualquerier import VisualQuerier
+    from cobras_ts.cobras_kshape import COBRAS_kShape
 
 import random
 import numpy as np
 import pandas as pd
-import datashader
 import sys
+
+
 
 
 curdoc().title = "COBRAS-TS"
@@ -49,8 +65,8 @@ query_answered = False
 fn = sys.argv[1]
 doc = curdoc()
 
+# TODO: We should reuse cli.prepare_data() here, it is now hardcoded for one case
 df = pd.read_csv(fn,header=None)
-
 
 labels = df.ix[:,0]
 df = df.drop(0,axis=1)

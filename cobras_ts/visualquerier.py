@@ -9,8 +9,8 @@ from bokeh.models.widgets import Div
 from functools import partial
 import time
 import numpy as np
-import datashader
 import pandas as pd
+import datashader
 
 
 colors = ["#009900", "#ff0000", "#cc6600", "#a0a0a0", "#00cccc", "#0066cc", "#0000cc"]

@@ -34,6 +34,13 @@ This package is available on PyPi::
 
     $ pip install cobras_ts
 
+The following dependencies are automatically installed: dtaidistance, kshape, numpy, scikit-learn.
+
+In case you want to use the interactive GUI, install ``cobras_ts`` using the following command to
+automatically install additional dependencies (bokeh, datashader, and cloudpickle)::
+
+    $ pip install --find-links https://dtai.cs.kuleuven.be/pip cobras_ts[gui]
+
 
 -----------------
 Usage
