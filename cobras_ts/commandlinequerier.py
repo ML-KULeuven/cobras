@@ -45,3 +45,6 @@ class CommandLineQuerier(Querier):
     def query_points(self, idx1, idx2):
         return _query_yes_no(
             "Should the following instances be in the same cluster?  " + str(idx1) + " and " + str(idx2))
+
+    def update_clustering(self, clustering):
+        return
