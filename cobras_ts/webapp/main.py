@@ -1,9 +1,10 @@
 import os, sys
-from threading import Thread
+from threading import Thread, Timer
 from bokeh.layouts import column, row
 from bokeh.models import Button
 from bokeh.plotting import curdoc, figure
 from bokeh.models.widgets import Div
+from functools import partial
 
 try:
     import datashader
@@ -28,7 +29,10 @@ import pandas as pd
 import sys
 
 
-
+def communicate_query_result(query_result):
+    global querier
+    querier.query_result = query_result
+    querier.query_answered = True
 
 curdoc().title = "COBRAS-TS"
 
@@ -38,17 +42,33 @@ def mustlink_callback():
     global query_answered
     global querier
     global layout
-    querier.query_answered = True
-    querier.query_result = True
+    global button_ml
+    global button_cl
+
+    button_ml.disabled = True
+    button_cl.disabled = True
+
     layout.children[1].children[1].children[1] = loading
+
+    t = Timer(0.1, partial(communicate_query_result, query_result=True))
+    t.start()
+    #querier.query_answered = True
+    #querier.query_result = True
 
 def cannotlink_callback():
     global query_answered
     global querier
     global layout
-    querier.query_answered = True
-    querier.query_result = False
     layout.children[1].children[1].children[1] = loading
+
+    button_ml.disabled = True
+    button_cl.disabled = True
+
+    t = Timer(0.1, partial(communicate_query_result, query_result=False))
+    t.start()
+
+    #querier.query_answered = True
+    #querier.query_result = False
 
 button_ml = Button(label="Yes (must-link)", button_type="success")
 button_ml.on_click(mustlink_callback)
@@ -115,6 +135,7 @@ ts2 = figure(x_axis_type="datetime", plot_width=250, plot_height=120, toolbar_lo
 
 layout = column(row(topdiv), row(column(div, all_data_plot), column(div2, row(ts1, ts2), column(button_ml, button_cl))), div3, initial_temp_clustering, div4)
 curdoc().add_root(layout)
+
 
 
 querier = VisualQuerier(data, curdoc(), layout)

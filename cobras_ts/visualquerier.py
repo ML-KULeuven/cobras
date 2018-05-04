@@ -33,6 +33,11 @@ def update(bokeh_layout, xs, ys1, ys2, iteration, num_queries):
 
     bokeh_layout.children[1].children[1].children[1] = row(ts1,ts2)
 
+    button_ml = bokeh_layout.children[1].children[1].children[2].children[0].children[0]
+    button_cl = bokeh_layout.children[1].children[1].children[2].children[1].children[0]
+    button_ml.disabled = False
+    button_cl.disabled = False
+
 
 def cluster_is_pure(metadata, attr, old_value, new_value):
     metadata["cluster"].is_pure = not metadata["cluster"].is_pure
