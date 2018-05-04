@@ -13,7 +13,7 @@ import pandas as pd
 import datashader
 
 
-colors = ["#009900", "#ff0000", "#cc6600", "#a0a0a0", "#00cccc", "#0066cc", "#0000cc"]
+colors = ["#cc6600", "#a0a0a0", "#00cccc", "#0066cc", "#0000cc"]
 
 
 @gen.coroutine
@@ -122,6 +122,8 @@ def update_clustering(querier, bokeh_layout, bokeh_doc, data, clustering, cluste
     finished_indicating.on_click(partial(remove_cluster_indicators_callback, querier=querier, bokeh_layout=bokeh_layout, bokeh_doc=bokeh_doc))
 
     bokeh_layout.children[4] = row(finished_indicating)
+
+    bokeh_layout.children[1].children[1].children[1] = Div(text="""Click 'Show me more queries!' below to continue querying""", width=400, height=100)
 
 
 class VisualQuerier(Querier):
