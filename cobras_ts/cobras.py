@@ -85,6 +85,12 @@ class COBRAS:
 
         while len(self.ml) + len(self.cl) < self.max_questions:
 
+            print("calling the querier to update the clustering, we have this many clusters: " + str(len(self.clustering.clusters)))
+            tot_pts = 0
+            for cluster in self.clustering.clusters:
+                tot_pts += len(cluster.get_all_points())
+            print("this number of points in total: " + str(tot_pts))
+
             self.querier.update_clustering(self.clustering)
 
             to_split, originating_cluster = self.identify_superinstance_to_split()
@@ -102,6 +108,7 @@ class COBRAS:
 
 
 
+
             if not new_clusters:
                 # it is possible that splitting a super-instance does not lead to a new cluster:
                 # e.g. a super-instance constains 2 points, of which one is in the test set
@@ -110,14 +117,18 @@ class COBRAS:
                 # queried)
                 # this case handles this, we simply add the super-instance back to its originating cluster,
                 # and set the already_tried flag to make sure we do not keep trying to split this superinstance
+
                 originating_cluster.super_instances.append(to_split)
                 to_split.tried_splitting = True
+
+                if originating_cluster not in self.clustering.clusters:
+                    self.clustering.clusters.append(originating_cluster)
+
                 continue
             else:
                 self.clustering.clusters.extend(new_clusters)
 
             self.merge_containing_clusters(starting_level=False)
-
 
         return [clust for clust, _, _ in self.results], [runtime for _, runtime, _ in self.results], self.ml, self.cl
 
