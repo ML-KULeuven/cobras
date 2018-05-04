@@ -2,4 +2,4 @@ include examples/run_cobras_dtw.py
 include examples/run_cobras_kshape.py
 include cobras_ts/webapp/theme.yaml
 include cobras_ts/webapp/templates/index.html
-include cobras_ts/webapp/templates/styles.html
+include cobras_ts/webapp/templates/styles.css
