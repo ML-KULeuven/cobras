@@ -26,6 +26,6 @@ class SuperInstance_kShape(SuperInstance):
         else:
             self.representative_idx = indices[0]
 
-    def distance_to(self, other_cluster):
-        d, _ = _sbd(self.sbd_centroid, other_cluster.sbd_centroid)
+    def distance_to(self, other_superinstance):
+        d, _ = _sbd(self.sbd_centroid, other_superinstance.sbd_centroid)
         return d

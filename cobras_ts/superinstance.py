@@ -21,5 +21,5 @@ class SuperInstance:
             raise ValueError('Super instances without training instances')
 
     @abc.abstractmethod
-    def distance_to(self, other_cluster):
+    def distance_to(self, other_superinstance):
         return
