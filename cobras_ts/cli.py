@@ -4,7 +4,7 @@ from pathlib import Path
 import logging
 import subprocess
 import time
-import platform
+# import platform
 
 import numpy as np
 from sklearn import metrics
@@ -94,8 +94,17 @@ def main(argv=None):
     dist_group.add_argument('--dtw-alpha', metavar='FLOAT', dest='dtw_alpha', type=float, default=0.5,
                             help='Compute affinity from distance: affinity = exp(-dist * alpha)')
 
+    vis_group = parser.add_argument_group("visualization")
+    vis_group.add_argument('--visclusters', metavar='DIR',
+                           help='Visualize each cluster and store files in this directory')
+    vis_group.add_argument('--vismargins', metavar='DIR',
+                           help='Visualize margins for each cluster and store files in this directory')
+    vis_group.add_argument('--vismargins-diffs', dest='vismargins_diffs', type=int,
+                           help='Maximal number of sets of differences to indiciate most different zones')
+
     data_group = parser.add_argument_group("dataset arguments")
-    data_group.add_argument('--format', dest='fileformat', choices=['csv'], help='Dataset format')
+    data_group.add_argument('--format', dest='fileformat', choices=['csv'],
+                            help='Dataset format')
     data_group.add_argument('--labelcol', metavar='INT', type=int,
                             help='Column with labels')
     data_group.add_argument('--visual', action='store_true',
@@ -139,6 +148,16 @@ def main(argv=None):
     end_time = time.time()
     logger.info("... done clustering in {} seconds".format(end_time - start_time))
     print("Clustering:")
-    print(clusterings)
+    print(clusterings[-1])
     if args.labelcol is not None:
         print("ARI score = " + str(metrics.adjusted_rand_score(clusterings[-1], labels)))
+
+    if args.vismargins:
+        # TODO: It would be better to plot the superinstances because of separated clusters
+        # TODO: Pass the actual medoids
+        from .visualization import plotclustermargins
+        plotclustermargins(clusterings[-1], series, args.vismargins, window=args.dtw_window,
+                           clfs=args.vismargins_diffs)
+    if args.visclusters:
+        from .visualization import plotclusters
+        plotclusters(clusterings[-1], series, args.visclusters)
