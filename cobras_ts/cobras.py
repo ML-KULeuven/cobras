@@ -85,12 +85,6 @@ class COBRAS:
 
         while len(self.ml) + len(self.cl) < self.max_questions:
 
-            print("calling the querier to update the clustering, we have this many clusters: " + str(len(self.clustering.clusters)))
-            tot_pts = 0
-            for cluster in self.clustering.clusters:
-                tot_pts += len(cluster.get_all_points())
-            print("this number of points in total: " + str(tot_pts))
-
             self.querier.update_clustering(self.clustering)
 
             to_split, originating_cluster = self.identify_superinstance_to_split()

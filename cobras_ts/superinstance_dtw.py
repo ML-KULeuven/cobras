@@ -26,6 +26,6 @@ class SuperInstance_DTW(SuperInstance):
         super(SuperInstance_DTW, self).__init__(data, indices, train_indices)
         self.representative_idx = get_prototype(self.data, self.train_indices)
 
-    def distance_to(self, other_cluster):
+    def distance_to(self, other_superinstance):
         # not really a distance, but that does not matter for COBRAS execution, this is only used for sorting etc.
-        return -self.data[self.representative_idx, other_cluster.representative_idx]
+        return -self.data[self.representative_idx, other_superinstance.representative_idx]
