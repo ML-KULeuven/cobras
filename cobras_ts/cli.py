@@ -50,11 +50,11 @@ def prepare_data(inputs, fileformat, labelcol, **_kwargs):
     return series, labels
 
 
-def prepare_clusterer(dist, series, querier, budget, dtw_window=None, dtw_alpha=None, **_kwargs):
+def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=None, **_kwargs):
     """Create a clusterer based on the arguments given by the user.
 
     :param dist: Type of distance (options: "dtw", "kshape")
-    :param series: List of sequences
+    :param data: List of sequences
     :param querier: Querier object
     :param budget: Max number of queries (passed to querier object)
     :param dtw_window: window parameter for DTW  (passed to querier object)
@@ -66,7 +66,7 @@ def prepare_clusterer(dist, series, querier, budget, dtw_window=None, dtw_alpha=
         from cobras_ts.cobras_dtw import COBRAS_DTW
         window = dtw_window
         alpha = dtw_alpha
-        dists = dtw.distance_matrix(series, window=int(0.01 * window * series.shape[1]))
+        dists = dtw.distance_matrix(data, window=int(0.01 * window * data.shape[1]))
         dists[dists == np.inf] = 0
         dists = dists + dists.T - np.diag(np.diag(dists))
         # noinspection PyUnresolvedReferences
@@ -74,7 +74,10 @@ def prepare_clusterer(dist, series, querier, budget, dtw_window=None, dtw_alpha=
         clusterer = COBRAS_DTW(affinities, querier, budget)
     elif dist == 'kshape':
         from cobras_ts.cobras_kshape import COBRAS_kShape
-        clusterer = COBRAS_kShape(series, querier, budget)
+        clusterer = COBRAS_kShape(data, querier, budget)
+    elif dist == 'euclidean':
+        from cobras_ts.cobras_kmeans import COBRAS_kmeans
+        clusterer = COBRAS_kmeans(data, querier, budget)
     else:
         raise Exception("Unknown distance type: {}".format(dist))
     return clusterer
@@ -87,7 +90,7 @@ def main(argv=None):
     parser.add_argument('--verbose', '-v', action='count', default=0, help='Verbose output')
 
     dist_group = parser.add_argument_group("distance arguments")
-    dist_group.add_argument('--dist', choices=['dtw', 'kshape'], default='kshape',
+    dist_group.add_argument('--dist', choices=['dtw', 'kshape','euclidean'], default='euclidean',
                             help='Distance computation')
     dist_group.add_argument('--dtw-window', metavar='INT', dest='dtw_window', type=int, default=10,
                             help='Window size for DTW')
@@ -131,7 +134,7 @@ def main(argv=None):
         from cobras_ts.labelquerier import LabelQuerier
         querier = LabelQuerier(labels)
 
-    clusterer = prepare_clusterer(series=series, querier=querier, **vars(args))
+    clusterer = prepare_clusterer(data=series, querier=querier, **vars(args))
 
     logger.info("Start clustering ...")
     start_time = time.time()
