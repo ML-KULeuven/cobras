@@ -15,7 +15,7 @@ COBRAS supports three modes for constraint elicitation:
    data matrix (starting from zero).
 
 3. With *interaction through a visual user interface*.
-   If you use COBRAS-TS, an instantiation of COBRAS that is tailored to time series clustering, you can use an
+   If you use COBRAS-TS, the instantiation of COBRAS that is tailored to time series clustering, you can use an
    interactive web application that visualizes the data, queries, and intermediate clustering results. A demo can be
    found at https://dtai.cs.kuleuven.be/software/cobras/
 
