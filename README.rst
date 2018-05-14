@@ -1,22 +1,23 @@
 =================================
-COBRAS for time-series clustering
+Semi-supervised clustering with COBRAS
 =================================
 
-Library for semi-supervised time series clustering using pairwise constraints.
+Library for semi-supervised clustering using pairwise constraints.
 
-COBRAS_TS supports three modes for constraint elicitation:
+COBRAS supports three modes for constraint elicitation:
 
 1. With *labeled data*. in this case the pairwise relations are derived from the labels.
-   This is mainly used to compare COBRAS_TS experimentally to competitors.
+   This is mainly used to compare COBRAS experimentally to competitors.
 
 2. With *interaction through the commandline*.
    In this case the user is queried about the pairwise relations, and can answer with yes (y) and no (n)
    through the commandline. The indices that are shown in the queries are the row indices in the specified
-   time series matrix (starting from zero).
+   data matrix (starting from zero).
 
 3. With *interaction through a visual user interface*.
-   We are currently also working on an interactive web application that visualizes the data, queries, and intermediate
-   clustering results. The image below shows the prototype of this application, it will be available here soon!
+   If you use COBRAS-TS, an instantiation of COBRAS that is tailored to time series clustering, you can use an
+   interactive web application that visualizes the data, queries, and intermediate clustering results. A demo can be
+   found at https://dtai.cs.kuleuven.be/software/cobras/
 
 .. class:: no-web
 
@@ -49,7 +50,7 @@ Usage
 COBRAS from the command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The COBRAS-TS algorithm can easily be run from the command line.
+The COBRAS algorithm can easily be run from the command line.
 A ``cobras_ts`` script will be installed by pip::
 
     $ cobras_ts --format=csv --labelcol=0 /path/to/UCR_TS_Archive_2015/ECG200/ECG200_TEST
@@ -61,6 +62,31 @@ COBRAS as a Python package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Examples can also be found in the examples subdirectory.
+
+
+Running COBRAS_kmeans:
+
+    .. code-block:: python
+
+        import numpy as np
+        from sklearn import metrics
+
+        from cobras_ts.cobras_kmeans import COBRAS_kmeans
+        from cobras_ts.labelquerier import LabelQuerier
+
+        budget = 100
+
+        data = np.loadtxt('/home/toon/data/iris.data', delimiter=',')
+        X = data[:,1:]
+        labels = data[:,0]
+
+        clusterer = COBRAS_kmeans(X, LabelQuerier(labels), budget)
+        clusterings, runtimes, ml, cl = clusterer.cluster()
+
+        print(clusterings)
+        print("done")
+        print(metrics.adjusted_rand_score(clusterings[-1],labels))
+
 
 Running COBRAS_kShape:
 
