@@ -20,10 +20,11 @@ def plotclustermargins(final_clustering, series, directory, window=None, clfs=No
         # np.savetxt(str(directory / f"series_{clusterid}.csv"), series, delimiter=',')
         labels = np.zeros(final_clustering.shape)
         labels[final_clustering == clusterid] = 1
-        weights = dtww.compute_weights_using_dt(series, labels, prototypeidx,
+        weights, importances = dtww.compute_weights_using_dt(series, labels, prototypeidx,
                                                                   window=window, min_ig=0.1,
                                                                   max_clfs=clfs,
                                                                   only_max=False, strict_cl=True)
+
         dtww.plot_margins(series[prototypeidx], weights,
                           filename=str(directory / f"cluster_margins_{clusterid}.png"))
 
