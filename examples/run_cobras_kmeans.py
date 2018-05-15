@@ -14,6 +14,5 @@ labels = data[:,0]
 clusterer = COBRAS_kmeans(X, LabelQuerier(labels), budget)
 clusterings, runtimes, ml, cl = clusterer.cluster()
 
-print(clusterings)
-print("done")
-print(metrics.adjusted_rand_score(clusterings[-1],labels))
+final_clustering = clusterings[-1].construct_cluster_labeling()
+print(metrics.adjusted_rand_score(final_clustering,labels))

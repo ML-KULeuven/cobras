@@ -9,6 +9,8 @@ class Clustering:
 
         pred = [-1] * sum([len(x) for x in pts_per_cluster])
 
+        #print("number of points here")
+        #print(len(pred))
         for i, pts in enumerate(pts_per_cluster):
             for pt in pts:
                 pred[pt] = i
