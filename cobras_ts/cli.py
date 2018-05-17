@@ -4,6 +4,9 @@ from pathlib import Path
 import logging
 import subprocess
 import time
+import tempfile
+from urllib.request import urlopen
+import shutil
 # import platform
 
 import numpy as np
@@ -27,7 +30,24 @@ def prepare_data(inputs, fileformat, labelcol, **_kwargs):
     :param labelcol: Integer or none
     :return: (series, labels)
     """
-    data_fn = Path(inputs[0])
+    data_fn = inputs[0]
+    if data_fn[:7] == "http://" or data_fn[:8] == "https://":
+        # File is a url, download first
+        _, tfilefn = tempfile.mkstemp(prefix="cobras_")
+        logger.debug("Writing to temporary file {}".format(tfilefn))
+        try:
+            with open(tfilefn, "wb") as tfile:
+                with urlopen(data_fn) as response:
+                    logger.info("Downloaded file from {} (return code {})".format(data_fn, response.getcode()))
+                    # data = response.read()
+                    shutil.copyfileobj(response, tfile)
+        except Exception as exc:
+            logger.error("Failed downloading file from {}".format(data_fn))
+            sys.exit(1)
+        data_fn = tfilefn
+
+    data_fn = Path(data_fn)
+    logger.info("Reading file {}".format(data_fn))
     data_format = None
     if fileformat is None:
         if data_fn.suffix == '.csv':
