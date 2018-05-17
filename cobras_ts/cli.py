@@ -42,6 +42,7 @@ def prepare_data(inputs, fileformat, labelcol, **_kwargs):
                     # data = response.read()
                     shutil.copyfileobj(response, tfile)
         except Exception as exc:
+            logger.error(exc)
             logger.error("Failed downloading file from {}".format(data_fn))
             sys.exit(1)
         data_fn = tfilefn
@@ -110,7 +111,7 @@ def main(argv=None):
     parser.add_argument('--verbose', '-v', action='count', default=0, help='Verbose output')
 
     dist_group = parser.add_argument_group("distance arguments")
-    dist_group.add_argument('--dist', choices=['dtw', 'kshape','euclidean'], default='euclidean',
+    dist_group.add_argument('--dist', choices=['dtw', 'kshape', 'euclidean'], default='euclidean',
                             help='Distance computation')
     dist_group.add_argument('--dtw-window', metavar='INT', dest='dtw_window', type=int, default=10,
                             help='Window size for DTW')
