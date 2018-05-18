@@ -148,6 +148,10 @@ def main(argv=None):
 
     logger.setLevel(max(logging.WARNING - 10 * args.verbose, logging.DEBUG))
     logger.addHandler(logging.StreamHandler(sys.stdout))
+    # Include dtw logging
+    logger_dtw = logging.getLogger("be.kuleuven.dtai.distance")
+    logger_dtw.setLevel(max(logging.WARNING - 10 * args.verbose, logging.DEBUG))
+    logger_dtw.addHandler(logging.StreamHandler(sys.stdout))
 
     if args.visual:
         # TODO: check with Toon, this was in labelcol != none?

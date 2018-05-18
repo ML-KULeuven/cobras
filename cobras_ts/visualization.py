@@ -7,6 +7,7 @@ from dtaidistance import dtw_weighted as dtww
 
 logger = logging.getLogger("cobra_ts")
 
+
 def plotsuperinstancemargins(clustering, series, directory, window=None, clfs=None):
     directory = Path(directory)
     for c_idx, cluster in enumerate(clustering.clusters):
@@ -16,12 +17,14 @@ def plotsuperinstancemargins(clustering, series, directory, window=None, clfs=No
             labels[super_instance.indices] = 1
             ignore_idxs = cluster_pts - set(super_instance.indices)
             weights, importances = dtww.compute_weights_using_dt(series, labels, super_instance.representative_idx,
-                                                             window=window, min_ig=0.1,
+                                                             window=window, min_ig=0.01, min_purity=0.9,
                                                              max_clfs=clfs,
                                                              only_max=False, strict_cl=True,
                                                              ignore_idxs=ignore_idxs)
 
-            dtww.plot_margins(series[super_instance.representative_idx,:], weights, filename=str(directory / f"cluster_margins_{c_idx}_{s_idx}.png"))
+            fig, ax = dtww.plot_margins(series[super_instance.representative_idx,:], weights, filename=str(directory / f"cluster_margins_{c_idx}_{s_idx}.png"))
+            plt.close(fig)
+
 
 def plotclustermargins(final_clustering, series, directory, window=None, clfs=None):
     # TODO: Can we get medoids from method?
