@@ -27,7 +27,7 @@ class COBRAS_kmeans(COBRAS):
                 no_training.append((cur_indices, np.mean(self.data[cur_indices,:],axis=0)))
 
         for indices, centroid in no_training:
-            closest_train = max(training, key=lambda x: self.data[x.representative_idx, centroid])
+            closest_train = min(training, key=lambda x: np.linalg.norm(self.data[x.representative_idx,:] - centroid))
             closest_train.indices.extend(indices)
 
         return training
