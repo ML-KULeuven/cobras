@@ -71,7 +71,8 @@ def prepare_data(inputs, fileformat, labelcol, **_kwargs):
     return series, labels
 
 
-def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=None, **_kwargs):
+def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=None,
+                      store_intermediate_results=False, **_kwargs):
     """Create a clusterer based on the arguments given by the user.
 
     :param dist: Type of distance (options: "dtw", "kshape")
@@ -92,13 +93,16 @@ def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=No
         dists = dists + dists.T - np.diag(np.diag(dists))
         # noinspection PyUnresolvedReferences
         affinities = np.exp(-dists * alpha)
-        clusterer = COBRAS_DTW(affinities, querier, budget)
+        clusterer = COBRAS_DTW(affinities, querier, budget,
+                               store_intermediate_results=store_intermediate_results)
     elif dist == 'kshape':
         from cobras_ts.cobras_kshape import COBRAS_kShape
-        clusterer = COBRAS_kShape(data, querier, budget)
+        clusterer = COBRAS_kShape(data, querier, budget,
+                                  store_intermediate_results=store_intermediate_results)
     elif dist == 'euclidean':
         from cobras_ts.cobras_kmeans import COBRAS_kmeans
-        clusterer = COBRAS_kmeans(data, querier, budget)
+        clusterer = COBRAS_kmeans(data, querier, budget,
+                                  store_intermediate_results=store_intermediate_results)
     else:
         raise Exception("Unknown distance type: {}".format(dist))
     return clusterer
@@ -136,6 +140,9 @@ def main(argv=None):
 
     parser.add_argument('--budget', type=int, default=100,
                         help='Number of constraints to ask maximally')
+    # TODO: store_intermediate_results=False does not yet work in clustering class
+    parser.add_argument('--hide-intermediate', dest='store_intermediate_results', action='store_false',
+                        help='Show intermediate clusterings')
     parser.add_argument('inputs', nargs=1, help='Dataset file')
     args = parser.parse_args(argv)
 
@@ -171,17 +178,29 @@ def main(argv=None):
     clusterings, runtimes, ml, cl = clusterer.cluster()
     end_time = time.time()
     logger.info("... done clustering in {} seconds".format(end_time - start_time))
+    if args.store_intermediate_results:
+        print("Intermediate clusterings:")
+        for cluster_idx, clustering in enumerate(clusterings):
+            print("--- Intermediate clusters, iteration {} ---".format(cluster_idx + 1))
+            for cluster in clustering.clusters:
+                print(cluster.get_all_points())
     print("Clustering:")
-    print(clusterings[-1])
+    clustering = clusterings[-1]
+    print("--- Final clusters ---")
+    for cluster in clustering.clusters:
+        print(cluster.get_all_points())
     if args.labelcol is not None:
-        print("ARI score = " + str(metrics.adjusted_rand_score(clusterings[-1], labels)))
+        print("")
+        print("ARI score = " + str(metrics.adjusted_rand_score(clustering.construct_cluster_labeling(), labels)))
 
     if args.vismargins:
         # TODO: It would be better to plot the superinstances because of separated clusters
         # TODO: Pass the actual medoids
-        from .visualization import plotclustermargins
-        plotclustermargins(clusterings[-1], series, args.vismargins, window=args.dtw_window,
-                           clfs=args.vismargins_diffs)
+        from .visualization import plotsuperinstancemargins
+        logger.info("Plotting cluster margins ...")
+        plotsuperinstancemargins(clustering, series, args.vismargins, window=args.dtw_window,
+                                 clfs=args.vismargins_diffs)
     if args.visclusters:
         from .visualization import plotclusters
-        plotclusters(clusterings[-1], series, args.visclusters)
+        logger.info("Plotting clusters ...")
+        plotclusters(clustering, series, args.visclusters)
