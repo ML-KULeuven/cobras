@@ -94,6 +94,7 @@ class COBRAS:
             if to_split is None:
                 break
 
+            clustering_to_store = None
             if self.intermediate_results:
                 clustering_to_store = copy.deepcopy(self.clustering)
 
