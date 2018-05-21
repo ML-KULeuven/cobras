@@ -71,7 +71,7 @@ def prepare_data(inputs, fileformat, labelcol, **_kwargs):
     return series, labels
 
 
-def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=None,
+def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=None, dtw_psi=None,
                       store_intermediate_results=False, **_kwargs):
     """Create a clusterer based on the arguments given by the user.
 
@@ -84,11 +84,11 @@ def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=No
     :return: Clusterer object
     """
     if dist == 'dtw':
+        logger.info("Distance function: DTW")
         from dtaidistance import dtw
         from cobras_ts.cobras_dtw import COBRAS_DTW
-        window = dtw_window
         alpha = dtw_alpha
-        dists = dtw.distance_matrix(data, window=int(0.01 * window * data.shape[1]))
+        dists = dtw.distance_matrix(data, window=dtw_window, psi=dtw_psi)
         dists[dists == np.inf] = 0
         dists = dists + dists.T - np.diag(np.diag(dists))
         # noinspection PyUnresolvedReferences
@@ -96,10 +96,12 @@ def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=No
         clusterer = COBRAS_DTW(affinities, querier, budget,
                                store_intermediate_results=store_intermediate_results)
     elif dist == 'kshape':
+        logger.info("Distance function: kShape")
         from cobras_ts.cobras_kshape import COBRAS_kShape
         clusterer = COBRAS_kShape(data, querier, budget,
                                   store_intermediate_results=store_intermediate_results)
     elif dist == 'euclidean':
+        logger.info("Distance function: Euclidean")
         from cobras_ts.cobras_kmeans import COBRAS_kmeans
         clusterer = COBRAS_kmeans(data, querier, budget,
                                   store_intermediate_results=store_intermediate_results)
@@ -116,9 +118,12 @@ def main(argv=None):
 
     dist_group = parser.add_argument_group("distance arguments")
     dist_group.add_argument('--dist', choices=['dtw', 'kshape', 'euclidean'], default='euclidean',
-                            help='Distance computation')
-    dist_group.add_argument('--dtw-window', metavar='INT', dest='dtw_window', type=int, default=10,
-                            help='Window size for DTW')
+                            help='Distance computation (default is euclidean)')
+    dist_group.add_argument('--dtw-window', metavar='INT', dest='dtw_window', type=float, default=0.1,
+                            help='Window size for DTW (if <1.0, it is considered a percentage of the length). '
+                                 'Default is 0.1.')
+    dist_group.add_argument('--dtw-psi', metavar='INT', dest='dtw_psi', type=int, default=0,
+                            help='Psi relaxation for DTW')
     dist_group.add_argument('--dtw-alpha', metavar='FLOAT', dest='dtw_alpha', type=float, default=0.5,
                             help='Compute affinity from distance: affinity = exp(-dist * alpha)')
 
@@ -175,7 +180,14 @@ def main(argv=None):
         from cobras_ts.labelquerier import LabelQuerier
         querier = LabelQuerier(labels)
 
-    clusterer = prepare_clusterer(data=series, querier=querier, **vars(args))
+    clusterer_args = vars(args)
+    if clusterer_args['dtw_window'] <= 1.0:
+        # Percentage
+        clusterer_args['dtw_window'] = int(clusterer_args['dtw_window'] * series.shape[1])
+        logger.info("DTW window {}".format(clusterer_args['dtw_window']))
+    else:
+        clusterer_args['dtw_window'] = int(clusterer_args['dtw_window'])
+    clusterer = prepare_clusterer(data=series, querier=querier, **clusterer_args)
 
     logger.info("Start clustering ...")
     start_time = time.time()
@@ -202,8 +214,8 @@ def main(argv=None):
         # TODO: Pass the actual medoids
         from .visualization import plotsuperinstancemargins
         logger.info("Plotting cluster margins ...")
-        plotsuperinstancemargins(clustering, series, args.vismargins, window=args.dtw_window,
-                                 clfs=args.vismargins_diffs)
+        plotsuperinstancemargins(clustering, series, args.vismargins, window=clusterer_args['dtw_window'],
+                                 psi=clusterer_args['dtw_psi'], clfs=args.vismargins_diffs)
     if args.visclusters:
         from .visualization import plotclusters
         logger.info("Plotting clusters ...")

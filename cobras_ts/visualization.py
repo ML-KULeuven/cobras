@@ -3,26 +3,40 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from dtaidistance import dtw_weighted as dtww
+from dtaidistance import dtw
 
 
 logger = logging.getLogger("cobra_ts")
 
 
-def plotsuperinstancemargins(clustering, series, directory, window=None, clfs=None):
+def plotsuperinstancemargins(clustering, series, directory, window=None, psi=None, clfs=None):
     directory = Path(directory)
+    prop_cycle = plt.rcParams['axes.prop_cycle']
+    colors = prop_cycle.by_key()['color']
     for c_idx, cluster in enumerate(clustering.clusters):
         cluster_pts = set(cluster.get_all_points())
         for s_idx, super_instance in enumerate(cluster.super_instances):
-            labels = np.zeros((series.shape[0],))
+            labels = np.zeros((series.shape[0],), dtype=int)
             labels[super_instance.indices] = 1
             ignore_idxs = cluster_pts - set(super_instance.indices)
-            weights, importances = dtww.compute_weights_using_dt(series, labels, super_instance.representative_idx,
-                                                             window=window, min_ig=0.01, min_purity=0.9,
-                                                             max_clfs=clfs,
-                                                             only_max=False, strict_cl=True,
-                                                             ignore_idxs=ignore_idxs)
+            weights, importances = dtww.compute_weights_using_dt(
+                series, labels, super_instance.representative_idx,
+                window=window, min_ig=0.01, min_purity=0.9, max_clfs=clfs,
+                only_max=False, strict_cl=True, ignore_idxs=ignore_idxs,
+                warping_paths_fnc=dtw.warping_paths, psi=psi)
 
-            fig, ax = dtww.plot_margins(series[super_instance.representative_idx,:], weights, filename=str(directory / f"cluster_margins_{c_idx}_{s_idx}.png"))
+            fig, ax = plt.subplots(nrows=2, ncols=1)
+            dtww.plot_margins(series[super_instance.representative_idx,:], weights, ax=ax[0])
+
+            for serie_idx, serie in enumerate(series):
+                if serie_idx in ignore_idxs:
+                    continue
+                label = int(labels[serie_idx])
+                color = colors[label]
+                ax[1].plot(serie, '-', color=color, alpha=0.1 + label * 0.4)
+
+            plt.savefig(str(directory / f"cluster_margins_{c_idx}_{s_idx}.png"))
+
             plt.close(fig)
 
 
