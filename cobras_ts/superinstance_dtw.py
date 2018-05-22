@@ -22,8 +22,8 @@ def get_prototype(A,indices):
 
 class SuperInstance_DTW(SuperInstance):
 
-    def __init__(self, data, indices, train_indices):
-        super(SuperInstance_DTW, self).__init__(data, indices, train_indices)
+    def __init__(self, data, indices, train_indices, parent=None):
+        super(SuperInstance_DTW, self).__init__(data, indices, train_indices, parent)
         self.representative_idx = get_prototype(self.data, self.train_indices)
 
     def distance_to(self, other_superinstance):

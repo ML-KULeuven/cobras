@@ -26,7 +26,7 @@ class COBRAS_DTW(COBRAS):
 
             si_train_indices = [x for x in cur_indices if x in self.train_indices]
             if len(si_train_indices) != 0:
-                training.append(SuperInstance_DTW(self.data, cur_indices, self.train_indices))
+                training.append(SuperInstance_DTW(self.data, cur_indices, self.train_indices, si))
             else:
                 no_training.append((cur_indices, get_prototype(self.data, cur_indices)))
 
@@ -34,7 +34,9 @@ class COBRAS_DTW(COBRAS):
             closest_train = max(training, key=lambda x: self.data[x.representative_idx, centroid])
             closest_train.indices.extend(indices)
 
+        si.children = training
+
         return training
 
-    def create_superinstance(self, indices):
-        return SuperInstance_DTW(self.data, indices, self.train_indices)
+    def create_superinstance(self, indices, parent=None):
+        return SuperInstance_DTW(self.data, indices, self.train_indices, parent)

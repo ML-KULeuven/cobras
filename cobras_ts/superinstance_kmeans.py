@@ -6,8 +6,8 @@ from cobras_ts.superinstance import SuperInstance
 
 class SuperInstance_kmeans(SuperInstance):
 
-    def __init__(self, data, indices, train_indices):
-        super(SuperInstance_kmeans, self).__init__(data, indices, train_indices)
+    def __init__(self, data, indices, train_indices, parent=None):
+        super(SuperInstance_kmeans, self).__init__(data, indices, train_indices, parent)
 
         self.centroid = np.mean(data[indices, :], axis=0)
         self.si_train_indices =  [x for x in indices if x in train_indices]

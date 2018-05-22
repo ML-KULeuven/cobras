@@ -41,7 +41,6 @@ def plotsuperinstancemargins(clustering, series, directory, window=None, psi=Non
 
 
 def plotclustermargins(final_clustering, series, directory, window=None, clfs=None):
-    # TODO: Can we get medoids from method?
     directory = Path(directory)
     final_clustering = np.array(final_clustering)
     for clusterid in np.unique(final_clustering):

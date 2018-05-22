@@ -23,7 +23,7 @@ class COBRAS_kShape(COBRAS):
 
             si_train_indices = [x for x in cur_indices if x in self.train_indices]
             if len(si_train_indices) != 0:
-                training.append(SuperInstance_kShape(self.data, cur_indices, self.train_indices, new_si_centroid))
+                training.append(SuperInstance_kShape(self.data, cur_indices, self.train_indices, new_si_centroid, si))
             else:
                 no_training.append((cur_indices, new_si_centroid))
 
@@ -39,7 +39,9 @@ class COBRAS_kShape(COBRAS):
                     closest_train = training_si
             closest_train.indices.extend(indices)
 
+        si.children = training
+
         return training
 
-    def create_superinstance(self, indices):
-        return SuperInstance_kShape(self.data, indices, self.train_indices)
+    def create_superinstance(self, indices, parent=None):
+        return SuperInstance_kShape(self.data, indices, self.train_indices, parent)

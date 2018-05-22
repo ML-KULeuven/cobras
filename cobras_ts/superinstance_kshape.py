@@ -16,8 +16,8 @@ def get_prototype(A,indices, prototype):
 
 class SuperInstance_kShape(SuperInstance):
 
-    def __init__(self, data, indices, train_indices, sbd_centroid=None):
-        super(SuperInstance_kShape, self).__init__(data, indices, train_indices)
+    def __init__(self, data, indices, train_indices, sbd_centroid=None, parent=None):
+        super(SuperInstance_kShape, self).__init__(data, indices, train_indices, parent)
 
         self.sbd_centroid = sbd_centroid
 

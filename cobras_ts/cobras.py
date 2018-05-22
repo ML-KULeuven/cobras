@@ -117,6 +117,7 @@ class COBRAS:
 
                 originating_cluster.super_instances.append(to_split)
                 to_split.tried_splitting = True
+                to_split.children = None
 
                 if originating_cluster not in self.clustering.clusters:
                     self.clustering.clusters.append(originating_cluster)
@@ -137,7 +138,7 @@ class COBRAS:
         return
 
     @abc.abstractmethod
-    def create_superinstance(self, indices):
+    def create_superinstance(self, indices, parent=None):
         return
 
     def determine_split_level(self, superinstance, intermediate_clustering):

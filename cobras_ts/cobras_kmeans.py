@@ -22,7 +22,7 @@ class COBRAS_kmeans(COBRAS):
 
             si_train_indices = [x for x in cur_indices if x in self.train_indices]
             if len(si_train_indices) != 0:
-                training.append(SuperInstance_kmeans(self.data, cur_indices, self.train_indices))
+                training.append(SuperInstance_kmeans(self.data, cur_indices, self.train_indices, si))
             else:
                 no_training.append((cur_indices, np.mean(self.data[cur_indices,:],axis=0)))
 
@@ -30,7 +30,9 @@ class COBRAS_kmeans(COBRAS):
             closest_train = min(training, key=lambda x: np.linalg.norm(self.data[x.representative_idx,:] - centroid))
             closest_train.indices.extend(indices)
 
+        si.children = training
+
         return training
 
-    def create_superinstance(self, indices):
-        return SuperInstance_kmeans(self.data, indices, self.train_indices)
+    def create_superinstance(self, indices, parent=None):
+        return SuperInstance_kmeans(self.data, indices, self.train_indices, parent)
