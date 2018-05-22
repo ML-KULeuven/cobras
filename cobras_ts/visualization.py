@@ -14,10 +14,10 @@ def plotsuperinstancemargins(clustering, series, directory, window=None, psi=Non
     prop_cycle = plt.rcParams['axes.prop_cycle']
     colors = prop_cycle.by_key()['color']
 
-    generalized_superinstances = clustering.get_cluster_to_generalized_super_instance_map()
+    cluster_to_generalized_super_instances = clustering.get_cluster_to_generalized_super_instance_map()
     for c_idx, cluster in enumerate(clustering.clusters):
         cluster_pts = set(cluster.get_all_points())
-        for s_idx, generalized_superinstance in enumerate(generalized_superinstances[cluster]):
+        for s_idx, generalized_superinstance in enumerate(cluster_to_generalized_super_instances[cluster]):
             labels = np.zeros((series.shape[0],), dtype=int)
 
             generalized_superinstance_indices = []
