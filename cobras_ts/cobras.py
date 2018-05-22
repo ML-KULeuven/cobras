@@ -299,6 +299,9 @@ class COBRAS:
                 if superinstance.tried_splitting:
                     continue
 
+                if len(superinstance.indices) == 1:
+                    continue
+
                 if len(superinstance.indices) > max_heur:
                     superinstance_to_split = superinstance
                     max_heur = len(superinstance.indices)
