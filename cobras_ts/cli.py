@@ -117,8 +117,8 @@ def main(argv=None):
     parser.add_argument('--verbose', '-v', action='count', default=0, help='Verbose output')
 
     dist_group = parser.add_argument_group("distance arguments")
-    dist_group.add_argument('--dist', choices=['dtw', 'kshape', 'euclidean'], default='euclidean',
-                            help='Distance computation (default is euclidean)')
+    dist_group.add_argument('--dist', choices=['dtw', 'kshape', 'euclidean'], default='dtw',
+                            help='Distance computation (default is dtw)')
     dist_group.add_argument('--dtw-window', metavar='INT', dest='dtw_window', type=float, default=0.1,
                             help='Window size for DTW (if <1.0, it is considered a percentage of the length). '
                                  'Default is 0.1.')
