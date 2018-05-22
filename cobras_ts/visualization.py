@@ -13,20 +13,29 @@ def plotsuperinstancemargins(clustering, series, directory, window=None, psi=Non
     directory = Path(directory)
     prop_cycle = plt.rcParams['axes.prop_cycle']
     colors = prop_cycle.by_key()['color']
+
+    generalized_superinstances = clustering.get_generalized_super_instances()
     for c_idx, cluster in enumerate(clustering.clusters):
         cluster_pts = set(cluster.get_all_points())
-        for s_idx, super_instance in enumerate(cluster.super_instances):
+        for s_idx, generalized_superinstance in enumerate(generalized_superinstances[cluster]):
             labels = np.zeros((series.shape[0],), dtype=int)
-            labels[super_instance.indices] = 1
-            ignore_idxs = cluster_pts - set(super_instance.indices)
+
+            generalized_superinstance_indices = []
+            for si in generalized_superinstance:
+                generalized_superinstance_indices.extend(si.indices)
+
+            labels[generalized_superinstance_indices] = 1
+            ignore_idxs = cluster_pts - set(generalized_superinstance_indices)
+            # TODO: plot all generalized superinstance representatives?
             weights, importances = dtww.compute_weights_using_dt(
-                series, labels, super_instance.representative_idx,
+                series, labels, generalized_superinstance[0].representative_idx,
                 window=window, min_ig=0.01, min_purity=0.9, max_clfs=clfs,
                 only_max=False, strict_cl=True, ignore_idxs=ignore_idxs,
                 warping_paths_fnc=dtw.warping_paths, psi=psi)
 
+
             fig, ax = plt.subplots(nrows=2, ncols=1)
-            dtww.plot_margins(series[super_instance.representative_idx,:], weights, ax=ax[0])
+            dtww.plot_margins(series[generalized_superinstance[0].representative_idx,:], weights, ax=ax[0])
 
             for serie_idx, serie in enumerate(series):
                 if serie_idx in ignore_idxs:
