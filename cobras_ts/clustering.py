@@ -18,7 +18,7 @@ class Clustering:
 
         return pred
 
-    def traverse_tree_add_if_same_cluster(self, si):
+    def create_generalized_super_instances(self, si):
         """
         Collects a list of 'generalized super-instances'.
         COBRAS always splits a super-instances in at least two new super-instances.
@@ -50,12 +50,12 @@ class Clustering:
         else:
             generalized_leaves = []
             for l in si.children:
-                generalized_leaves.extend(self.traverse_tree_add_if_same_cluster(l))
+                generalized_leaves.extend(self.create_generalized_super_instances(l))
             return generalized_leaves
 
-    def get_generalized_super_instances(self):
+    def get_cluster_to_generalized_super_instance_map(self):
         # first get the generalized super-instances
-        generalized_super_instance_sets = self.traverse_tree_add_if_same_cluster(self.clusters[0].super_instances[0].get_root())
+        generalized_super_instance_sets = self.create_generalized_super_instances(self.clusters[0].super_instances[0].get_root())
 
         # now map each cluster to its leaves
         cluster_to_si = collections.defaultdict(list)
