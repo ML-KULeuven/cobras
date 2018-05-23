@@ -213,7 +213,10 @@ class COBRAS:
 
     def merge_containing_clusters(self, starting_level=False):
 
-        clustering_to_store = self.intermediate_results[-1][0]
+        if len(self.intermediate_results) > 0:
+            clustering_to_store = self.intermediate_results[-1][0]
+        else:
+            clustering_to_store = copy.deepcopy(self.clustering)
 
         merged = True
         while merged and len(self.ml) + len(self.cl) < self.max_questions:
