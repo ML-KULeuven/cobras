@@ -259,7 +259,7 @@ class COBRAS:
                             # if it is the first merging step there is no previous clustering that is being refined,
                             # so temporary results are the ones being constructed now
                             self.intermediate_results.append(
-                                (clustering_to_store, time.time() - self.start,
+                                (copy.deepcopy(self.clustering), time.time() - self.start,
                                  len(self.ml) + len(self.cl)))
                         else:
                             self.intermediate_results.append((clustering_to_store, time.time() - self.start, len(self.ml) + len(self.cl)))
@@ -271,7 +271,7 @@ class COBRAS:
                     if self.store_intermediate_results:
                         if starting_level:
                             self.intermediate_results.append(
-                                (clustering_to_store, time.time() - self.start,
+                                (copy.deepcopy(self.clustering), time.time() - self.start,
                                  len(self.ml) + len(self.cl)))
                         else:
                             self.intermediate_results.append((clustering_to_store, time.time() - self.start, len(self.ml) + len(self.cl)))

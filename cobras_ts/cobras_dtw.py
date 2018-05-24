@@ -20,7 +20,7 @@ class COBRAS_DTW(COBRAS):
         training = []
         no_training = []
 
-        for new_si_idx in range(len(set(split_labels))):
+        for new_si_idx in set(split_labels):
             # go from super instance indices to global ones
             cur_indices = [si.indices[idx] for idx, c in enumerate(split_labels) if c == new_si_idx]
 
