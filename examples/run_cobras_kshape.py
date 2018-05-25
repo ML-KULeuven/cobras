@@ -6,6 +6,10 @@ from sklearn import metrics
 from cobras_ts.cobras_kshape import COBRAS_kShape
 from cobras_ts.labelquerier import LabelQuerier
 
+import random
+
+random.seed(1245)
+np.random.seed(1245)
 
 ucr_path = '/home/toon/Downloads/UCR_TS_Archive_2015'
 dataset = 'ECG200'
@@ -18,5 +22,7 @@ labels = data[:,0]
 clusterer = COBRAS_kShape(series, LabelQuerier(labels), budget)
 clusterings, runtimes, ml, cl = clusterer.cluster()
 
-final_clustering = clusterings[-1].construct_cluster_labeling()
+
+final_clustering = clusterings[-1]
 print(metrics.adjusted_rand_score(final_clustering,labels))
+

@@ -80,7 +80,7 @@ class COBRAS:
             # for the first couple of queries (those used to determine the initial splitting level)
             # we do not have a clustering, we just return 'all elements in one cluster'
             for i in range(len(self.ml) + len(self.cl)):
-                self.intermediate_results.append((copy.deepcopy(self.clustering), time.time() - self.start, len(self.ml) + len(self.cl)))
+                self.intermediate_results.append((self.clustering.construct_cluster_labeling(), time.time() - self.start, len(self.ml) + len(self.cl)))
 
 
         # the first bottom up merging step
@@ -96,7 +96,7 @@ class COBRAS:
 
             clustering_to_store = None
             if self.intermediate_results:
-                clustering_to_store = copy.deepcopy(self.clustering)
+                clustering_to_store = self.clustering.construct_cluster_labeling()
 
             originating_cluster.super_instances.remove(to_split)
             if len(originating_cluster.super_instances) == 0:
@@ -216,7 +216,7 @@ class COBRAS:
         if len(self.intermediate_results) > 0:
             clustering_to_store = self.intermediate_results[-1][0]
         else:
-            clustering_to_store = copy.deepcopy(self.clustering)
+            clustering_to_store = self.clustering.construct_cluster_labeling()
 
         merged = True
         while merged and len(self.ml) + len(self.cl) < self.max_questions:
@@ -259,7 +259,7 @@ class COBRAS:
                             # if it is the first merging step there is no previous clustering that is being refined,
                             # so temporary results are the ones being constructed now
                             self.intermediate_results.append(
-                                (copy.deepcopy(self.clustering), time.time() - self.start,
+                                (self.clustering.construct_cluster_labeling(), time.time() - self.start,
                                  len(self.ml) + len(self.cl)))
                         else:
                             self.intermediate_results.append((clustering_to_store, time.time() - self.start, len(self.ml) + len(self.cl)))
@@ -271,7 +271,7 @@ class COBRAS:
                     if self.store_intermediate_results:
                         if starting_level:
                             self.intermediate_results.append(
-                                (copy.deepcopy(self.clustering), time.time() - self.start,
+                                (self.clustering.construct_cluster_labeling(), time.time() - self.start,
                                  len(self.ml) + len(self.cl)))
                         else:
                             self.intermediate_results.append((clustering_to_store, time.time() - self.start, len(self.ml) + len(self.cl)))
@@ -279,7 +279,7 @@ class COBRAS:
 
 
             if self.store_intermediate_results and not starting_level:
-                self.intermediate_results[-1] = (copy.deepcopy(self.clustering), time.time() - self.start,
+                self.intermediate_results[-1] = (self.clustering.construct_cluster_labeling(), time.time() - self.start,
                                                  len(self.ml) + len(self.cl))
 
     def identify_superinstance_to_split(self):

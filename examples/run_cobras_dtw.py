@@ -26,5 +26,5 @@ affinities = np.exp(-dists * alpha)
 clusterer = COBRAS_DTW(affinities, LabelQuerier(labels), budget)
 clusterings, runtimes, ml, cl = clusterer.cluster()
 
-final_clustering = clusterings[-1].construct_cluster_labeling()
+final_clustering = clusterings[-1]
 print(metrics.adjusted_rand_score(final_clustering,labels))
