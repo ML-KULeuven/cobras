@@ -9,7 +9,7 @@ from dtaidistance import dtw
 logger = logging.getLogger("cobra_ts")
 
 
-def plotsuperinstancemargins(clustering, series, directory, window=None, psi=None, clfs=None):
+def plotsuperinstancemargins(clustering, series, directory, window=None, psi=None, clfs=None, patternlen=None):
     directory = Path(directory)
     prop_cycle = plt.rcParams['axes.prop_cycle']
     colors = prop_cycle.by_key()['color']
@@ -29,13 +29,13 @@ def plotsuperinstancemargins(clustering, series, directory, window=None, psi=Non
             # TODO: plot all generalized superinstance representatives?
             weights, importances = dtww.compute_weights_using_dt(
                 series, labels, generalized_superinstance[0].representative_idx,
-                window=window, min_ig=0.01, min_purity=0.9, max_clfs=clfs,
+                window=window, min_ig=0.01, min_purity=0.8, max_clfs=clfs,
                 only_max=False, strict_cl=True, ignore_idxs=ignore_idxs,
-                warping_paths_fnc=dtw.warping_paths, psi=psi)
-
+                warping_paths_fnc=dtw.warping_paths, psi=psi, patternlen=patternlen)
 
             fig, ax = plt.subplots(nrows=2, ncols=1)
-            dtww.plot_margins(series[generalized_superinstance[0].representative_idx,:], weights, ax=ax[0])
+            dtww.plot_margins(series[generalized_superinstance[0].representative_idx,:], weights, ax=ax[0],
+                              importances=importances)
 
             for serie_idx, serie in enumerate(series):
                 if serie_idx in ignore_idxs:
@@ -45,7 +45,7 @@ def plotsuperinstancemargins(clustering, series, directory, window=None, psi=Non
                 ax[1].plot(serie, '-', color=color, alpha=0.1 + label * 0.4)
 
             plt.savefig(str(directory / f"cluster_margins_{c_idx}_{s_idx}.png"))
-
+            logger.debug(f"Created cluster_margins_{c_idx}_{s_idx}.png")
             plt.close(fig)
 
 

@@ -88,7 +88,7 @@ def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=No
         from dtaidistance import dtw
         from cobras_ts.cobras_dtw import COBRAS_DTW
         alpha = dtw_alpha
-        dists = dtw.distance_matrix(data, window=dtw_window, psi=dtw_psi)
+        dists = dtw.distance_matrix_fast(data, window=dtw_window, psi=dtw_psi)
         dists[dists == np.inf] = 0
         dists = dists + dists.T - np.diag(np.diag(dists))
         # noinspection PyUnresolvedReferences
@@ -134,6 +134,8 @@ def main(argv=None):
                            help='Visualize margins for each cluster and store files in this directory')
     vis_group.add_argument('--vismargins-diffs', dest='vismargins_diffs', type=int,
                            help='Maximal number of sets of differences to indiciate most different zones')
+    vis_group.add_argument('--vismargins-patternlen', dest='vismargins_patternlen', type=int,
+                           help='Only learn patterns over indices maximally patternlen apart')
 
     data_group = parser.add_argument_group("dataset arguments")
     data_group.add_argument('--format', dest='fileformat', choices=['csv'],
@@ -215,7 +217,8 @@ def main(argv=None):
         from .visualization import plotsuperinstancemargins
         logger.info("Plotting cluster margins ...")
         plotsuperinstancemargins(clustering, series, args.vismargins, window=clusterer_args['dtw_window'],
-                                 psi=clusterer_args['dtw_psi'], clfs=args.vismargins_diffs)
+                                 psi=clusterer_args['dtw_psi'], clfs=args.vismargins_diffs,
+                                 patternlen=args.vismargins_patternlen)
     if args.visclusters:
         from .visualization import plotclusters
         logger.info("Plotting clusters ...")
