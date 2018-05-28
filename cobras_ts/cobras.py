@@ -68,7 +68,7 @@ class COBRAS:
 
         # the split level for this initial super-instance is determined,
         # the super-instance is split, and a new cluster is created for each of the newly created superinstances
-        initial_k = self.determine_split_level(initial_superinstance, copy.deepcopy(self.clustering))
+        initial_k = self.determine_split_level(initial_superinstance, copy.deepcopy(self.clustering.construct_cluster_labeling()))
 
         superinstances = self.split_superinstance(initial_superinstance,initial_k)
         self.clustering.clusters = []
