@@ -37,12 +37,21 @@ def plotsuperinstancemargins(clustering, series, directory, window=None, psi=Non
             dtww.plot_margins(series[generalized_superinstance[0].representative_idx,:], weights, ax=ax[0],
                               importances=importances)
 
+            ml_cnt, cl_cnt, ig_cnt = 0, 0, 0
             for serie_idx, serie in enumerate(series):
                 if serie_idx in ignore_idxs:
+                    ig_cnt += 1
                     continue
                 label = int(labels[serie_idx])
+                if label == 0:
+                    cl_cnt += 1
+                elif label == 1:
+                    ml_cnt += 1
+                else:
+                    raise Exception(f"Unknown label: {label}")
                 color = colors[label]
                 ax[1].plot(serie, '-', color=color, alpha=0.1 + label * 0.4)
+            ax[1].set_title(f"This SI size: {ml_cnt}, Other SI size: {cl_cnt}, Ignored SI size: {ig_cnt}")
 
             plt.savefig(str(directory / f"cluster_margins_{c_idx}_{s_idx}.png"))
             logger.debug(f"Created cluster_margins_{c_idx}_{s_idx}.png")
