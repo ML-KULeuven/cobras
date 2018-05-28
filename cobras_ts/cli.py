@@ -88,6 +88,7 @@ def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=No
         from dtaidistance import dtw
         from cobras_ts.cobras_dtw import COBRAS_DTW
         alpha = dtw_alpha
+        # TODO this only works if dtaidistance is installed with c support?
         dists = dtw.distance_matrix_fast(data, window=dtw_window, psi=dtw_psi)
         dists[dists == np.inf] = 0
         dists = dists + dists.T - np.diag(np.diag(dists))
@@ -198,12 +199,13 @@ def main(argv=None):
     logger.info("... done clustering in {} seconds".format(end_time - start_time))
     if args.store_intermediate_results:
         print("Intermediate clusterings:")
-        for cluster_idx, clustering in enumerate(clusterings):
-            print("--- Intermediate clusters, iteration {} ---".format(cluster_idx + 1))
-            for cluster in clustering.clusters:
-                print(cluster.get_all_points())
+        for clustering_idx, clustering in enumerate(clusterings):
+            print("--- Intermediate clusters, iteration {} ---".format(clustering_idx + 1))
+            for cluster_idx in set(clustering):
+                print(np.where(np.array(clustering) == cluster_idx)[0])
+
     print("Clustering:")
-    clustering = clusterings[-1]
+    clustering = clusterer.clustering
     print("--- Final clusters ---")
     for cluster in clustering.clusters:
         print(cluster.get_all_points())
