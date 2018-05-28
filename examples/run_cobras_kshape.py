@@ -20,9 +20,7 @@ series = data[:,1:]
 labels = data[:,0]
 
 clusterer = COBRAS_kShape(series, LabelQuerier(labels), budget)
-clusterings, runtimes, ml, cl = clusterer.cluster()
+clustering, intermediate_clusterings, runtimes, ml, cl = clusterer.cluster()
 
-
-final_clustering = clusterings[-1]
-print(metrics.adjusted_rand_score(final_clustering,labels))
+print(metrics.adjusted_rand_score(clustering.construct_cluster_labeling(),labels))
 

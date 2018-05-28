@@ -129,9 +129,9 @@ class COBRAS:
             self.merge_containing_clusters(starting_level=False)
 
         if self.store_intermediate_results:
-            return [clust for clust, _, _ in self.intermediate_results], [runtime for _, runtime, _ in self.intermediate_results], self.ml, self.cl
+            return self.clustering, [clust for clust, _, _ in self.intermediate_results], [runtime for _, runtime, _ in self.intermediate_results], self.ml, self.cl
         else:
-            return self.clustering.construct_cluster_labeling()
+            return self.clustering
 
     @abc.abstractmethod
     def split_superinstance(self, si, k):

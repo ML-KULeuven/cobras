@@ -81,10 +81,10 @@ Running COBRAS_kmeans:
         labels = data[:,0]
 
         clusterer = COBRAS_kmeans(X, LabelQuerier(labels), budget)
-        clusterings, runtimes, ml, cl = clusterer.cluster()
+        clustering, intermediate_clusterings, runtimes, ml, cl = clusterer.cluster()
 
-        final_clustering = clusterings[-1].construct_cluster_labeling()
-        print(metrics.adjusted_rand_score(final_clustering,labels))
+        print(metrics.adjusted_rand_score(clustering.construct_cluster_labeling(),labels))
+
 
 
 Running COBRAS_kShape:
@@ -108,10 +108,9 @@ Running COBRAS_kShape:
         labels = data[:,0]
 
         clusterer = COBRAS_kShape(series, LabelQuerier(labels), budget)
-        clusterings, runtimes, ml, cl = clusterer.cluster()
+        clustering, intermediate_clusterings, runtimes, ml, cl = clusterer.cluster()
 
-        final_clustering = clusterings[-1].construct_cluster_labeling()
-        print(metrics.adjusted_rand_score(final_clustering,labels))
+        print(metrics.adjusted_rand_score(clustering.construct_cluster_labeling(),labels))
 
 Running COBRAS_DTW:
 
@@ -147,10 +146,10 @@ by using the C implementation in the dtaidistance package.
         affinities = np.exp(-dists * alpha)
 
         clusterer = COBRAS_DTW(affinities, LabelQuerier(labels), budget)
-        clusterings, runtimes, ml, cl = clusterer.cluster()
+        clustering, intermediate_clusterings, runtimes, ml, cl = clusterer.cluster()
 
-        final_clustering = clusterings[-1].construct_cluster_labeling()
-        print(metrics.adjusted_rand_score(final_clustering,labels))
+        print(metrics.adjusted_rand_score(clustering.construct_cluster_labeling(),labels))
+
 
 
 -----------------

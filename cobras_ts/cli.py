@@ -194,18 +194,23 @@ def main(argv=None):
 
     logger.info("Start clustering ...")
     start_time = time.time()
-    clusterings, runtimes, ml, cl = clusterer.cluster()
+
+    if args.store_intermediate_results:
+        clustering, intermediate_cluster_labelings, runtimes, ml, cl = clusterer.cluster()
+    else:
+        clustering = clusterer.cluster()
+
+
     end_time = time.time()
     logger.info("... done clustering in {} seconds".format(end_time - start_time))
     if args.store_intermediate_results:
         print("Intermediate clusterings:")
-        for clustering_idx, clustering in enumerate(clusterings):
+        for clustering_idx, cur_clustering in enumerate(intermediate_cluster_labelings):
             print("--- Intermediate clusters, iteration {} ---".format(clustering_idx + 1))
-            for cluster_idx in set(clustering):
-                print(np.where(np.array(clustering) == cluster_idx)[0])
+            for cluster_idx in set(cur_clustering):
+                print(np.where(np.array(cur_clustering) == cluster_idx)[0])
 
     print("Clustering:")
-    clustering = clusterer.clustering
     print("--- Final clusters ---")
     for cluster in clustering.clusters:
         print(cluster.get_all_points())
