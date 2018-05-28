@@ -216,7 +216,7 @@ def main(argv=None):
         # TODO: Pass the actual medoids
         from .visualization import plotsuperinstancemargins
         logger.info("Plotting cluster margins ...")
-        plotsuperinstancemargins(clustering, series, args.vismargins, window=clusterer_args['dtw_window'],
+        plotsuperinstancemargins(clusterer.clustering, series, args.vismargins, window=clusterer_args['dtw_window'],
                                  psi=clusterer_args['dtw_psi'], clfs=args.vismargins_diffs,
                                  patternlen=args.vismargins_patternlen)
     if args.visclusters:
