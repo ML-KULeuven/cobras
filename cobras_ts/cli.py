@@ -111,9 +111,10 @@ def prepare_clusterer(dist, data, querier, budget, dtw_window=None, dtw_alpha=No
     return clusterer
 
 
-def main(argv=None):
+def create_parser():
     parser = argparse.ArgumentParser(description=description,
                                      epilog=epilog)
+
 
     parser.add_argument('--verbose', '-v', action='count', default=0, help='Verbose output')
 
@@ -148,11 +149,19 @@ def main(argv=None):
 
     parser.add_argument('--budget', type=int, default=100,
                         help='Number of constraints to ask maximally')
-    # TODO: store_intermediate_results=False does not yet work in clustering class
+
     parser.add_argument('--hide-intermediate', dest='store_intermediate_results', action='store_false',
                         help='Show intermediate clusterings')
     parser.add_argument('inputs', nargs=1, help='Dataset file')
+
+    return parser
+
+def main(argv=None):
+
+    parser = create_parser()
     args = parser.parse_args(argv)
+    print("printing stuff in the cli")
+    print(sys.argv)
 
     logger.setLevel(max(logging.WARNING - 10 * args.verbose, logging.DEBUG))
     logger.addHandler(logging.StreamHandler(sys.stdout))
@@ -162,7 +171,6 @@ def main(argv=None):
     logger_dtw.addHandler(logging.StreamHandler(sys.stdout))
 
     if args.visual:
-        # TODO: check with Toon, this was in labelcol != none?
         # if platform.system() == "Darwin":
         #     # It's a Mac
         #     logger.info("Opening http://localhost:5006/webapp")
@@ -170,7 +178,7 @@ def main(argv=None):
         webapp_dir = Path(__file__).parent / "webapp"
         logger.debug(f"Opening bokeh webapp at {webapp_dir}")
         # TODO: All arguments should be passed to webapp
-        subprocess.check_call(["bokeh", "serve", "--show", str(webapp_dir), "--args", args.inputs[0]])
+        subprocess.check_call(["bokeh", "serve", "--show", str(webapp_dir), "--args", " ".join(sys.argv)])
         logger.info("Bokeh server closed")
         sys.exit(1)
 

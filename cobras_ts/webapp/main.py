@@ -18,6 +18,7 @@ if datashader is None:
 try:
     from cobras_ts.visualquerier import VisualQuerier
     from cobras_ts.cobras_kshape import COBRAS_kShape
+    from cobras_ts.cli import create_parser, prepare_data, prepare_clusterer
 except ImportError:
     sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir, os.pardir))
     from cobras_ts.visualquerier import VisualQuerier
@@ -82,31 +83,28 @@ np.random.seed(123)
 
 query_answered = False
 
-fn = sys.argv[1]
+sys.argv = sys.argv[1].split(' ')
+parser = create_parser()
+args = parser.parse_args(None)
+
+series, labels = prepare_data(**vars(args))
+
 doc = curdoc()
 
-# TODO: We should reuse cli.prepare_data() here, it is now hardcoded for one case
-df = pd.read_csv(fn,header=None)
-
-labels = df.ix[:,0]
-df = df.drop(0,axis=1)
-ts = df.ix[0,:]
-
-data = df.as_matrix()
 
 # reformat the data into an appropriate DataFrame
 dfs = []
 split = pd.DataFrame({'x': [np.nan]})
-for i in range(len(data)):
-    x = list(range(len(ts)))
-    y = data[i]
+for i in range(len(series)):
+    x = list(range(len(series[0])))
+    y = series[i]
     df3 = pd.DataFrame({'x': x, 'y': y})
     dfs.append(df3)
     dfs.append(split)
 df2 = pd.concat(dfs, ignore_index=True)
 
-x_range = 0, data.shape[1]
-y_range = data[1:].min(), data[1:].max()
+x_range = 0, series.shape[1]
+y_range = series[1:].min(), series[1:].max()
 
 all_data_plot = figure(plot_width=400, plot_height=180, x_range=x_range, y_range=y_range, title="Full dataset",toolbar_location='above')
 p = figure(plot_width=400, plot_height=180, x_range=x_range, y_range=y_range, title="Full dataset",toolbar_location='above')
@@ -138,8 +136,12 @@ curdoc().add_root(layout)
 
 
 
-querier = VisualQuerier(data, curdoc(), layout)
-clusterer = COBRAS_kShape(data, querier, 100000)
+querier = VisualQuerier(series, curdoc(), layout)
+#clusterer = COBRAS_kShape(series, querier, 100000)
+clusterer_args = vars(args)
+clusterer = prepare_clusterer(data=series, querier=querier, **clusterer_args)
+
+
 
 def blocking_task():
     clusterer.cluster()
