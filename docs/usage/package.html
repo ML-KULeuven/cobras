@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Package &#8212; COBRAS-TS 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Notebook" href="notebook.html" />
+    <link rel="prev" title="Command-line" href="cli.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="package">
+<h1>Package<a class="headerlink" href="#package" title="Permalink to this headline">¶</a></h1>
+<p>These examples can also be found in the examples subdirectory.</p>
+<div class="section" id="running-cobras-kshape">
+<h2>Running COBRAS_kShape<a class="headerlink" href="#running-cobras-kshape" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+
+<span class="kn">from</span> <span class="nn">cobras_ts.cobras_kshape</span> <span class="kn">import</span> <span class="n">COBRAS_kShape</span>
+<span class="kn">from</span> <span class="nn">cobras_ts.querier.labelquerier</span> <span class="kn">import</span> <span class="n">LabelQuerier</span>
+
+<span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1245</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1245</span><span class="p">)</span>
+
+<span class="n">ucr_path</span> <span class="o">=</span> <span class="s1">&#39;/home/toon/Downloads/UCR_TS_Archive_2015&#39;</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="s1">&#39;ECG200&#39;</span>
+<span class="n">budget</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ucr_path</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">dataset</span> <span class="o">+</span> <span class="s1">&#39;_TEST&#39;</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<span class="n">series</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">clusterer</span> <span class="o">=</span> <span class="n">COBRAS_kShape</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">LabelQuerier</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="n">budget</span><span class="p">)</span>
+<span class="n">clustering</span><span class="p">,</span> <span class="n">intermediate_clusterings</span><span class="p">,</span> <span class="n">runtimes</span><span class="p">,</span> <span class="n">ml</span><span class="p">,</span> <span class="n">cl</span> <span class="o">=</span> <span class="n">clusterer</span><span class="o">.</span><span class="n">cluster</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">clustering</span><span class="o">.</span><span class="n">construct_cluster_labeling</span><span class="p">(),</span><span class="n">labels</span><span class="p">))</span>
+
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-cobras-dtw">
+<h2>Running COBRAS_dtw<a class="headerlink" href="#running-cobras-dtw" title="Permalink to this headline">¶</a></h2>
+<p>This uses the dtaidistance package to compute the DTW distance matrix.
+Note that constructing this matrix is typically the most time consuming step, and significant speedups can be achieved
+by using the C implementation in the dtaidistance package.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">dtaidistance</span> <span class="kn">import</span> <span class="n">dtw</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
+
+<span class="kn">from</span> <span class="nn">cobras_ts.cobras_dtw</span> <span class="kn">import</span> <span class="n">COBRAS_DTW</span>
+<span class="kn">from</span> <span class="nn">cobras_ts.querier.labelquerier</span> <span class="kn">import</span> <span class="n">LabelQuerier</span>
+
+<span class="n">ucr_path</span> <span class="o">=</span> <span class="s1">&#39;/home/toon/Downloads/UCR_TS_Archive_2015&#39;</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="s1">&#39;ECG200&#39;</span>
+<span class="n">budget</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">window</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># load the data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ucr_path</span><span class="p">,</span><span class="n">dataset</span><span class="p">,</span><span class="n">dataset</span> <span class="o">+</span> <span class="s1">&#39;_TEST&#39;</span><span class="p">),</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<span class="n">series</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># construct the affinity matrix</span>
+<span class="n">dists</span> <span class="o">=</span> <span class="n">dtw</span><span class="o">.</span><span class="n">distance_matrix</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="n">window</span> <span class="o">*</span> <span class="n">series</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="n">dists</span><span class="p">[</span><span class="n">dists</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">dists</span> <span class="o">=</span> <span class="n">dists</span> <span class="o">+</span> <span class="n">dists</span><span class="o">.</span><span class="n">T</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">dists</span><span class="p">))</span>
+<span class="n">affinities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dists</span> <span class="o">*</span> <span class="n">alpha</span><span class="p">)</span>
+
+<span class="c1"># initialise cobras_dtw with the precomputed affinities</span>
+<span class="n">clusterer</span> <span class="o">=</span> <span class="n">COBRAS_DTW</span><span class="p">(</span><span class="n">affinities</span><span class="p">,</span> <span class="n">LabelQuerier</span><span class="p">(</span><span class="n">labels</span><span class="p">),</span> <span class="n">budget</span><span class="p">)</span>
+<span class="n">clustering</span><span class="p">,</span> <span class="n">intermediate_clusterings</span><span class="p">,</span> <span class="n">runtimes</span><span class="p">,</span> <span class="n">ml</span><span class="p">,</span> <span class="n">cl</span> <span class="o">=</span> <span class="n">clusterer</span><span class="o">.</span><span class="n">cluster</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">metrics</span><span class="o">.</span><span class="n">adjusted_rand_score</span><span class="p">(</span><span class="n">clustering</span><span class="o">.</span><span class="n">construct_cluster_labeling</span><span class="p">(),</span><span class="n">labels</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<p class="caption"><span class="caption-text">Usage:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-line</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-cobras-kshape">Running COBRAS_kShape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-cobras-dtw">Running COBRAS_dtw</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notebook.html">Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="webapp.html">Web application</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/cobras.html">COBRAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/clustering.html">Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/clustering.html#cluster">Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/superinstance.html">SuperInstance</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="cli.html" title="previous chapter">Command-line</a></li>
+      <li>Next: <a href="notebook.html" title="next chapter">Notebook</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Toon Van Craenendonck.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/package.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

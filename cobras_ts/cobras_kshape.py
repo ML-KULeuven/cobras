@@ -8,6 +8,9 @@ from cobras_ts.cobras import COBRAS
 class COBRAS_kShape(COBRAS):
 
     def split_superinstance(self, si, k):
+        """
+            Splits the given super-instance using kshape clustering
+        """
         # the actual splitting
         pred = kshape(self.data[si.indices, :], k)
 
@@ -44,4 +47,7 @@ class COBRAS_kShape(COBRAS):
         return training
 
     def create_superinstance(self, indices, parent=None):
+        """
+            Creates a super-instance of type SuperInstance_kShape
+        """
         return SuperInstance_kShape(self.data, indices, self.train_indices, parent)

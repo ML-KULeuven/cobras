@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>COBRAS &#8212; COBRAS-TS 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Clustering" href="clustering.html" />
+    <link rel="prev" title="Web application" href="../usage/webapp.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="cobras">
+<h1>COBRAS<a class="headerlink" href="#cobras" title="Permalink to this headline">¶</a></h1>
+<p>The COBRAS class contains most of the clustering procedure that is shared between specific COBRAS variants: COBRAS_dtw, COBRAS_kmeans and COBRAS_kshape (see below)</p>
+<p>The following methods are specific to each variant:</p>
+<ul class="simple">
+<li><p>create_superinstance: this method simply creates a super-instance of the appropriate type</p></li>
+<li><p>split_superinstance: this method splits a super-instance</p></li>
+</ul>
+<dl class="py class">
+<dt id="cobras_ts.cobras.COBRAS">
+<em class="property">class </em><code class="sig-prename descclassname">cobras_ts.cobras.</code><code class="sig-name descname">COBRAS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">querier</span></em>, <em class="sig-param"><span class="n">max_questions</span></em>, <em class="sig-param"><span class="n">train_indices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">store_intermediate_results</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras.COBRAS" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="cobras_ts.cobras.COBRAS.cluster">
+<code class="sig-name descname">cluster</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras.COBRAS.cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform clustering</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>if cobras.store_intermediate_results is set to False, this method returns a single Clustering object
+if cobras.store_intermediate_results is set to True, this method returns a tuple containing the following items:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a <code class="xref py py-class docutils literal notranslate"><span class="pre">Clustering</span></code> object representing the resulting clustering</p></li>
+<li><p>a list of intermediate clustering labellings for each query (each item is a list of clustering labels)</p></li>
+<li><p>a list of timestamps for each query</p></li>
+<li><p>the list of must-link constraints that was queried</p></li>
+<li><p>the list of cannot-link constraints that was queried</p></li>
+</ul>
+</div></blockquote>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cobras_ts.cobras.COBRAS.create_superinstance">
+<em class="property">abstract </em><code class="sig-name descname">create_superinstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras.COBRAS.create_superinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new super-instance containing the given instances and with the given parent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – the indices of the instances that should be in the new super-instance</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="superinstance.html#cobras_ts.superinstance.SuperInstance" title="cobras_ts.superinstance.SuperInstance"><em>SuperInstance</em></a>) – the parent of this super-instance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the new super-instance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cobras_ts.cobras.COBRAS.split_superinstance">
+<em class="property">abstract </em><code class="sig-name descname">split_superinstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">si</span></em>, <em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras.COBRAS.split_superinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the super-instance si into k new super-instances</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>si</strong> (<a class="reference internal" href="superinstance.html#cobras_ts.superinstance.SuperInstance" title="cobras_ts.superinstance.SuperInstance"><em>SuperInstance</em></a>) – the super-instance to split</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – the desired number of new super-instances</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of the new super-instances</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="superinstance.html#cobras_ts.superinstance.SuperInstance" title="cobras_ts.superinstance.SuperInstance">SuperInstance</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="cobras-dtw">
+<h2>COBRAS_DTW<a class="headerlink" href="#cobras-dtw" title="Permalink to this headline">¶</a></h2>
+<p><strong>Important</strong> when using <cite>COBRAS_DTW</cite> the data argument given to the COBRAS constructor should <em>NOT</em> be the raw data.
+In the case of <cite>COBRAS_DTW</cite>, COBRAS expects an affinity matrix as input. This affinity matrix should be generated by the dtaidistance package as in the run_cobras_dtw example (under examples).</p>
+<dl class="py class">
+<dt id="cobras_ts.cobras_dtw.COBRAS_DTW">
+<em class="property">class </em><code class="sig-prename descclassname">cobras_ts.cobras_dtw.</code><code class="sig-name descname">COBRAS_DTW</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">querier</span></em>, <em class="sig-param"><span class="n">max_questions</span></em>, <em class="sig-param"><span class="n">train_indices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">store_intermediate_results</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_dtw.COBRAS_DTW" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="cobras_ts.cobras_dtw.COBRAS_DTW.create_superinstance">
+<code class="sig-name descname">create_superinstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_dtw.COBRAS_DTW.create_superinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a super-instance of type SuperInstance_DTW</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cobras_ts.cobras_dtw.COBRAS_DTW.split_superinstance">
+<code class="sig-name descname">split_superinstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">si</span></em>, <em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_dtw.COBRAS_DTW.split_superinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the given super-instance using spectral clustering</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cobras-kmeans">
+<h2>COBRAS_kmeans<a class="headerlink" href="#cobras-kmeans" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="cobras_ts.cobras_kmeans.COBRAS_kmeans">
+<em class="property">class </em><code class="sig-prename descclassname">cobras_ts.cobras_kmeans.</code><code class="sig-name descname">COBRAS_kmeans</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">querier</span></em>, <em class="sig-param"><span class="n">max_questions</span></em>, <em class="sig-param"><span class="n">train_indices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">store_intermediate_results</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_kmeans.COBRAS_kmeans" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="cobras_ts.cobras_kmeans.COBRAS_kmeans.create_superinstance">
+<code class="sig-name descname">create_superinstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_kmeans.COBRAS_kmeans.create_superinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a super-instance of type SuperInstance_kmeans</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cobras_ts.cobras_kmeans.COBRAS_kmeans.split_superinstance">
+<code class="sig-name descname">split_superinstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">si</span></em>, <em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_kmeans.COBRAS_kmeans.split_superinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the given super-instance using k-means</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cobras-kshape">
+<h2>COBRAS_kshape<a class="headerlink" href="#cobras-kshape" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="cobras_ts.cobras_kshape.COBRAS_kShape">
+<em class="property">class </em><code class="sig-prename descclassname">cobras_ts.cobras_kshape.</code><code class="sig-name descname">COBRAS_kShape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">querier</span></em>, <em class="sig-param"><span class="n">max_questions</span></em>, <em class="sig-param"><span class="n">train_indices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">store_intermediate_results</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_kshape.COBRAS_kShape" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="cobras_ts.cobras_kshape.COBRAS_kShape.create_superinstance">
+<code class="sig-name descname">create_superinstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_kshape.COBRAS_kShape.create_superinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a super-instance of type SuperInstance_kShape</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cobras_ts.cobras_kshape.COBRAS_kShape.split_superinstance">
+<code class="sig-name descname">split_superinstance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">si</span></em>, <em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cobras_kshape.COBRAS_kShape.split_superinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits the given super-instance using kshape clustering</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<p class="caption"><span class="caption-text">Usage:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/cli.html">Command-line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/notebook.html">Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/webapp.html">Web application</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">COBRAS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cobras-dtw">COBRAS_DTW</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cobras-kmeans">COBRAS_kmeans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cobras-kshape">COBRAS_kshape</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="clustering.html">Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="clustering.html#cluster">Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="superinstance.html">SuperInstance</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../usage/webapp.html" title="previous chapter">Web application</a></li>
+      <li>Next: <a href="clustering.html" title="next chapter">Clustering</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Toon Van Craenendonck.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/modules/cobras.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

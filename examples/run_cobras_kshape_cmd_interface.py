@@ -4,7 +4,7 @@ import numpy as np
 from sklearn import metrics
 
 from cobras_ts.cobras_kshape import COBRAS_kShape
-from cobras_ts.commandlinequerier import CommandLineQuerier
+from cobras_ts.querier.commandlinequerier import CommandLineQuerier
 
 ucr_path = '/home/toon/Downloads/UCR_TS_Archive_2015'
 dataset = 'ECG200'

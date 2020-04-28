@@ -4,7 +4,7 @@ import numpy as np
 from sklearn import metrics
 
 from cobras_ts.cobras_kshape import COBRAS_kShape
-from cobras_ts.labelquerier import LabelQuerier
+from cobras_ts.querier.labelquerier import LabelQuerier
 
 import random
 

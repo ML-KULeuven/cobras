@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Clustering &#8212; COBRAS-TS 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SuperInstance" href="superinstance.html" />
+    <link rel="prev" title="COBRAS" href="cobras.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="clustering">
+<h1>Clustering<a class="headerlink" href="#clustering" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="cobras_ts.clustering.Clustering">
+<em class="property">class </em><code class="sig-prename descclassname">cobras_ts.clustering.</code><code class="sig-name descname">Clustering</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clusters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.clustering.Clustering" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of Clustering represents a full clustering of the dataset
+Note that an instance of clustering is not always a valid clustering (e.g. we are in the middle of the merging phase)</p>
+<dl class="py attribute">
+<dt id="cobras_ts.clustering.Clustering.clusters">
+<code class="sig-name descname">clusters</code><em class="property"> = None</em><a class="headerlink" href="#cobras_ts.clustering.Clustering.clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>The clusters in this clustering</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="cobras_ts.clustering.Clustering.construct_cluster_labeling">
+<code class="sig-name descname">construct_cluster_labeling</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.clustering.Clustering.construct_cluster_labeling" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a list of labels indicating the clustering assignment of this clustering</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="cluster">
+<h1>Cluster<a class="headerlink" href="#cluster" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="cobras_ts.cluster.Cluster">
+<em class="property">class </em><code class="sig-prename descclassname">cobras_ts.cluster.</code><code class="sig-name descname">Cluster</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">super_instances</span></em><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cluster.Cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of the class Cluster represents a single cluster.
+In the case of COBRAS a cluster contains several super-instances.</p>
+<dl class="py method">
+<dt id="cobras_ts.cluster.Cluster.get_all_points">
+<code class="sig-name descname">get_all_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cobras_ts.cluster.Cluster.get_all_points" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a list of all the indices of instances in this cluster</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="cobras_ts.cluster.Cluster.is_pure">
+<code class="sig-name descname">is_pure</code><em class="property"> = None</em><a class="headerlink" href="#cobras_ts.cluster.Cluster.is_pure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not this cluster is pure (as indicated by the querier)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="cobras_ts.cluster.Cluster.super_instances">
+<code class="sig-name descname">super_instances</code><em class="property"> = None</em><a class="headerlink" href="#cobras_ts.cluster.Cluster.super_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>The super-instances in this cluster</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<p class="caption"><span class="caption-text">Usage:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/cli.html">Command-line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/notebook.html">Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/webapp.html">Web application</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Modules:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cobras.html">COBRAS</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#cluster">Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="superinstance.html">SuperInstance</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="cobras.html" title="previous chapter">COBRAS</a></li>
+      <li>Next: <a href="superinstance.html" title="next chapter">SuperInstance</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Toon Van Craenendonck.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/modules/clustering.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

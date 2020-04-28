@@ -2,11 +2,20 @@ import collections
 
 
 class Clustering:
+    """
+        An instance of Clustering represents a full clustering of the dataset
+        Note that an instance of clustering is not always a valid clustering (e.g. we are in the middle of the merging phase)
+
+    """
 
     def __init__(self,clusters):
+        #: The clusters in this clustering
         self.clusters = clusters
 
     def construct_cluster_labeling(self):
+        """
+        :return: a list of labels indicating the clustering assignment of this clustering
+        """
 
         pts_per_cluster = [cluster.get_all_points() for cluster in self.clusters]
 

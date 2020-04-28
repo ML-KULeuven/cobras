@@ -7,6 +7,9 @@ from cobras_ts.superinstance import SuperInstance
 class SuperInstance_kmeans(SuperInstance):
 
     def __init__(self, data, indices, train_indices, parent=None):
+        """
+            Chooses the super-instance representative as the instance closest to the super-instance centroid
+        """
         super(SuperInstance_kmeans, self).__init__(data, indices, train_indices, parent)
 
         self.centroid = np.mean(data[indices, :], axis=0)
@@ -20,5 +23,8 @@ class SuperInstance_kmeans(SuperInstance):
 
 
     def distance_to(self, other_superinstance):
+        """
+            The distance between two super-instances is equal to the distance between there centroids  
+        """
         return np.linalg.norm(self.centroid - other_superinstance.centroid)
 
