@@ -96,6 +96,11 @@ Note: this requires tensorflow to be installed. For example:
         :align: center
 
 
+-------------
+Documentation
+-------------
+Additional documentation can be found at https://ml-kuleuven.github.io/cobras/
+
 
 -----------------
 Dependencies
