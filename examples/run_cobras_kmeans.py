@@ -2,7 +2,7 @@ import numpy as np
 from sklearn import metrics
 
 from cobras_ts.cobras_kmeans import COBRAS_kmeans
-from cobras_ts.labelquerier import LabelQuerier
+from cobras_ts.querier.labelquerier import LabelQuerier
 
 
 budget = 100

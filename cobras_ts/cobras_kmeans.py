@@ -7,6 +7,10 @@ from sklearn.cluster import KMeans
 class COBRAS_kmeans(COBRAS):
 
     def split_superinstance(self, si, k):
+        """
+            Splits the given super-instance using k-means
+        """
+
         data_to_cluster = self.data[si.indices, :]
         km = KMeans(k)
         km.fit(data_to_cluster)
@@ -35,4 +39,8 @@ class COBRAS_kmeans(COBRAS):
         return training
 
     def create_superinstance(self, indices, parent=None):
+        """
+            Creates a super-instance of type SuperInstance_kmeans
+        """
+
         return SuperInstance_kmeans(self.data, indices, self.train_indices, parent)

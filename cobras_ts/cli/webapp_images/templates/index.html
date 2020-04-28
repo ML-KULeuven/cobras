@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+ 	<style>
+             {% include 'styles.css' %}
+        </style>
+        <meta charset="utf-8">
+        <title>COBRAS-TS</title>
+        {{ bokeh_css }}
+        {{ bokeh_js }}
+    </head>
+    <body>
+	<center>
+        {{ plot_div|indent(8) }}
+        {{ plot_script|indent(8) }}
+      </center>
+    </body>
+</html>

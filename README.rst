@@ -1,6 +1,6 @@
-=================================
+======================================
 Semi-supervised clustering with COBRAS
-=================================
+======================================
 
 Library for semi-supervised clustering using pairwise constraints.
 
@@ -40,15 +40,18 @@ The following dependencies are automatically installed: dtaidistance, kshape, nu
 In case you want to use the interactive GUI, install ``cobras_ts`` using the following command to
 automatically install additional dependencies (bokeh, datashader, and cloudpickle)::
 
-    $ pip install --find-links https://dtai.cs.kuleuven.be/software/cobras/datashader.html pip cobras_ts[gui]
+    $ pip install pip cobras_ts[gui]
 
+If you want to additionally install tensorflow in order to cluster images::
+
+    $ pip install pip cobras_ts[gui, images]
 
 -----------------
 Usage
 -----------------
 
-COBRAS from the command line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. COBRAS from the command line
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The COBRAS algorithm can easily be run from the command line.
 A ``cobras_ts`` script will be installed by pip::
@@ -58,97 +61,39 @@ A ``cobras_ts`` script will be installed by pip::
 This script is also available in the repository as ``cobras_ts_cli.py``.
 
 
-COBRAS as a Python package
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+2. COBRAS as a Python package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Examples can also be found in the examples subdirectory.
+Examples of using COBRAS as a Python package can be found in the `examples` subdirectory.
 
 
-Running COBRAS_kmeans:
+3. COBRAS in an jupyter notebook
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    .. code-block:: python
+An example on how to run COBRAS for time series clustering using a jupyter notebook can be found in examples/COBRAS_notebook_timeseries.ipynb.
+An example for image clustering can be found in examples/COBRAS_notebook_images.ipynb.
+In these examples, queries and results are plotted directly in the notebook and user feedback is given through the notebook prompt.
 
-        import numpy as np
-        from sklearn import metrics
 
-        from cobras_ts.cobras_kmeans import COBRAS_kmeans
-        from cobras_ts.labelquerier import LabelQuerier
+4. COBRAS with a GUI
+~~~~~~~~~~~~~~~~~~~~
 
-        budget = 100
+For instructions on using COBRAS with a GUI to cluster time series, see: https://dtai.cs.kuleuven.be/software/cobras/
 
-        data = np.loadtxt('/home/toon/data/iris.data', delimiter=',')
-        X = data[:,1:]
-        labels = data[:,0]
 
-        clusterer = COBRAS_kmeans(X, LabelQuerier(labels), budget)
-        clustering, intermediate_clusterings, runtimes, ml, cl = clusterer.cluster()
+To run COBRAS on image data, add the --images option followed by the directory containing the images to be clustered.
+Note: this requires tensorflow to be installed. For example:
 
-        print(metrics.adjusted_rand_score(clustering.construct_cluster_labeling(),labels))
+    $ cobras_ts --visual --images cobras_ts/webapp_images/data
 
 
 
-Running COBRAS_kShape:
+.. class:: no-web
 
-    .. code-block:: python
-
-        import os
-
-        import numpy as np
-        from sklearn import metrics
-
-        from cobras_ts.cobras_kshape import COBRAS_kShape
-        from cobras_ts.labelquerier import LabelQuerier
-
-        ucr_path = '/home/toon/Downloads/UCR_TS_Archive_2015'
-        dataset = 'ECG200'
-        budget = 100
-
-        data = np.loadtxt(os.path.join(ucr_path,dataset,dataset + '_TEST'), delimiter=',')
-        series = data[:,1:]
-        labels = data[:,0]
-
-        clusterer = COBRAS_kShape(series, LabelQuerier(labels), budget)
-        clustering, intermediate_clusterings, runtimes, ml, cl = clusterer.cluster()
-
-        print(metrics.adjusted_rand_score(clustering.construct_cluster_labeling(),labels))
-
-Running COBRAS_DTW:
-
-This uses the dtaidistance package to compute the DTW distance matrix.
-Note that constructing this matrix is typically the most time consuming step, and significant speedups can be achieved
-by using the C implementation in the dtaidistance package.
-
-    .. code-block:: python
-
-        import os
-
-        import numpy as np
-        from dtaidistance import dtw
-        from sklearn import metrics
-
-        from cobras_ts.cobras_dtw import COBRAS_DTW
-        from cobras_ts.labelquerier import LabelQuerier
-
-        ucr_path = '/home/toon/Downloads/UCR_TS_Archive_2015'
-        dataset = 'ECG200'
-        budget = 100
-        alpha = 0.5
-        window = 10
-
-        data = np.loadtxt(os.path.join(ucr_path,dataset,dataset + '_TEST'), delimiter=',')
-        series = data[:,1:]
-        labels = data[:,0]
-
-
-        dists = dtw.distance_matrix(series, window=int(0.01 * window * series.shape[1]))
-        dists[dists == np.inf] = 0
-        dists = dists + dists.T - np.diag(np.diag(dists))
-        affinities = np.exp(-dists * alpha)
-
-        clusterer = COBRAS_DTW(affinities, LabelQuerier(labels), budget)
-        clustering, intermediate_clusterings, runtimes, ml, cl = clusterer.cluster()
-
-        print(metrics.adjusted_rand_score(clustering.construct_cluster_labeling(),labels))
+    .. image:: ../../raw/master/images/cobras_images_resized.png
+        :alt: COBRAS^TS for interactive time series clustering
+        :width: 5%
+        :align: center
 
 
 
@@ -156,12 +101,12 @@ by using the C implementation in the dtaidistance package.
 Dependencies
 -----------------
 
-This package uses Python3, numpy, scikit-learn, kshape and dtaidistance.
+This package uses Python3, numpy, scikit-learn, kshape, tensorflow and dtaidistance.
 
 -----------------
 Contact
 -----------------
-Toon Van Craenendonck at toon.vancraenendonck@cs.kuleuven.be
+Toon Van Craenendonck at toonvancraenendonck@gmail.com
 
 -----------------
 License

@@ -8,6 +8,9 @@ from cobras_ts.cobras import COBRAS
 class COBRAS_DTW(COBRAS):
 
     def split_superinstance(self, si, k):
+        """
+            Splits the given super-instance using spectral clustering
+        """
         data_to_cluster = self.data[np.ix_(si.indices, si.indices)]
         spec = SpectralClustering(k, affinity="precomputed")
         spec.fit(data_to_cluster)
@@ -39,4 +42,7 @@ class COBRAS_DTW(COBRAS):
         return training
 
     def create_superinstance(self, indices, parent=None):
+        """
+            Creates a super-instance of type SuperInstance_DTW
+        """
         return SuperInstance_DTW(self.data, indices, self.train_indices, parent)

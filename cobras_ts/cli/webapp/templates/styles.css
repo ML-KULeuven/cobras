@@ -1,0 +1,67 @@
+@import url(https://fonts.googleapis.com/css?family=Noto+Sans);
+            body {
+              font-family: 'Noto Sans', sans-serif;
+              -webkit-font-smoothing: antialiased;
+              text-rendering: optimizeLegibility;
+              color: black;
+              background: white;
+             }
+
+
+.top_title_div {
+    margin-bottom: -10px;
+    width: 10%; float:left;
+}
+.title_div { 
+    margin-bottom: -75px;
+    margin-top: 500px;
+    width: 10%; float:left;
+}
+
+
+.bk-root .bk-bs-btn-success {
+color: #FDFEFE;
+background-color: #21618C;
+border-color: #21618C;
+width: 20px;
+}
+.bk-root .bk-bs-btn-success:focus {
+color: #FDFEFE;
+background-color: #21618C;
+border-color: #21618C;
+}
+.bk-root .bk-bs-btn-success:active {
+color: #FDFEFE;
+background-color: #21618C;
+border-color: #21618C;
+}
+.bk-root .bk-bs-btn-success:hover {
+color: #FDFEFE;
+background-color: #5DADE2;
+border-color: #5DADE2;
+}
+
+
+.bk-root .bk-bs-btn-warning {
+color: black;
+background-color: black;
+border-color: black;
+}
+.bk-root .bk-bs-btn-warning:focus {
+color: black;
+background-color: black;
+border-color: black;
+}
+.bk-root .bk-bs-btn-warning:active {
+color: black;
+background-color:black;
+border-color: black;
+}
+.bk-root .bk-bs-btn-warning:hover {
+color: black;
+background-color: black;
+border-color: black;
+}
+
+
+

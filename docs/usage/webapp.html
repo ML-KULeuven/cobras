@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Web application &#8212; COBRAS-TS 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="COBRAS" href="../modules/cobras.html" />
+    <link rel="prev" title="Notebook" href="notebook.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="web-application">
+<h1>Web application<a class="headerlink" href="#web-application" title="Permalink to this headline">¶</a></h1>
+<p>If you supply the –visual flag to the <code class="docutils literal notranslate"><span class="pre">cobras_ts</span></code> command, a web application will be started.
+The web application allows to visually answer queries.</p>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>To cluster <a class="reference external" href="https://dtai.cs.kuleuven.be/software/cobras/CBF_TEST_SAMPLE">a sample of the CBF dataset</a> from the <a class="reference external" href="http://timeseriesclassification.com/description.php?Dataset=CBF">UCR archive</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cobras_ts</span> <span class="o">--</span><span class="n">visual</span> <span class="o">--</span><span class="nb">format</span><span class="o">=</span><span class="n">csv</span> <span class="o">--</span><span class="n">dist</span><span class="o">=</span><span class="n">kshape</span> <span class="o">--</span><span class="n">labelcol</span><span class="o">=</span><span class="mi">0</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bitbucket</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">toon_vc</span><span class="o">/</span><span class="n">cobras_ts</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">cobras_ts</span><span class="o">/</span><span class="n">webapp</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">CBF_TEST_SAMPLE</span>
+</pre></div>
+</div>
+<p>To cluster images use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cobras_ts</span> <span class="o">--</span><span class="n">visual</span> <span class="o">--</span><span class="n">images</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">image</span><span class="o">/</span><span class="n">directory</span>
+</pre></div>
+</div>
+<p>Where <cite>path/to/image/directory/</cite> is a path to a directory containing the .jpg images to cluster.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table of Contents</a></h3>
+<p class="caption"><span class="caption-text">Usage:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Command-line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package.html">Package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebook.html">Notebook</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Web application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Modules:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules/cobras.html">COBRAS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/clustering.html">Clustering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/clustering.html#cluster">Cluster</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/superinstance.html">SuperInstance</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="notebook.html" title="previous chapter">Notebook</a></li>
+      <li>Next: <a href="../modules/cobras.html" title="next chapter">COBRAS</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Toon Van Craenendonck.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/usage/webapp.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

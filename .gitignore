@@ -1,2 +1,8 @@
 .idea
+__pycache__
 _build
+
+examples/.ipynb_checkpoints/
+cobras_ts.egg-info/
+build/*
+dist/*

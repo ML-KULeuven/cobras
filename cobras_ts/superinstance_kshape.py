@@ -17,6 +17,10 @@ def get_prototype(A,indices, prototype):
 class SuperInstance_kShape(SuperInstance):
 
     def __init__(self, data, indices, train_indices, sbd_centroid=None, parent=None):
+        """
+           If sbd_centroid is given the instance that has the smallest distance to the sbd_centroid is chosen as representative
+           Otherwise the representative index is simply the first instance in this super-instance
+        """
         super(SuperInstance_kShape, self).__init__(data, indices, train_indices, parent)
 
         self.sbd_centroid = sbd_centroid
@@ -27,5 +31,8 @@ class SuperInstance_kShape(SuperInstance):
             self.representative_idx = indices[0]
 
     def distance_to(self, other_superinstance):
+        """
+            The distance between two super-instances is the distance between their sbd centroids
+        """
         d, _ = _sbd(self.sbd_centroid, other_superinstance.sbd_centroid)
         return d
