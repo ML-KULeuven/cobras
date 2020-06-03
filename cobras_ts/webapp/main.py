@@ -16,12 +16,12 @@ if datashader is None:
     sys.exit(1)
 
 try:
-    from cobras_ts.visualquerier import VisualQuerier
+    from cobras_ts.querier.visualquerier import VisualQuerier
     from cobras_ts.cobras_kshape import COBRAS_kShape
     from cobras_ts.cli import create_parser, prepare_data, prepare_clusterer
 except ImportError:
     sys.path.append(os.path.join(os.path.abspath(os.path.dirname(__file__)), os.pardir, os.pardir))
-    from cobras_ts.visualquerier import VisualQuerier
+    from cobras_ts.querier.visualquerier import VisualQuerier
     from cobras_ts.cobras_kshape import COBRAS_kShape
 
 import random

@@ -81,9 +81,14 @@ class COBRAS(abc.ABC):
 
         # while we have not reached the max number of questions
         while len(self.ml) + len(self.cl) < self.max_questions:
-            # allow the Querier to stop the clustering procedure
-            continue_clustering = self.querier.update_clustering(self.clustering)
-            if not continue_clustering:
+            # notify the querier that there is a new clustering
+            # such that this new clustering can be displayed to the user
+            self.querier.update_clustering(self.clustering)
+
+            # after inspecting the clustering the user might be satisfied
+            # let the querier check whether or not the clustering procedure should continue
+            # note: at this time only used in the notebook queriers
+            if not self.querier.continue_cluster_process():
                 break
 
             # choose the next super-instance to split
