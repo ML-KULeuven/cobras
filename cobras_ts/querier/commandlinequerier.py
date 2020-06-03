@@ -37,6 +37,7 @@ def _query_yes_no(question, default="yes"):
             sys.stdout.write("Please respond with 'yes' or 'no' "
                              "(or 'y' or 'n').\n")
 
+
 class CommandLineQuerier(Querier):
 
     def __init__(self):
@@ -45,6 +46,3 @@ class CommandLineQuerier(Querier):
     def query_points(self, idx1, idx2):
         return _query_yes_no(
             "Should the following instances be in the same cluster?  " + str(idx1) + " and " + str(idx2))
-
-    def update_clustering(self, clustering):
-        return True

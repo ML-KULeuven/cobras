@@ -192,5 +192,4 @@ class VisualQuerier(Querier):
 
         self.iteration += 1
 
-        return True
 

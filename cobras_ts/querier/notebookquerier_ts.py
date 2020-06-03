@@ -57,6 +57,9 @@ class NotebookQuerierTS(Querier):
         return _query_yes_no(
             "Should the following instances be in the same cluster?  " + str(idx1) + " and " + str(idx2))
 
+    def continue_cluster_process(self):
+        return _query_yes_no("Continue querying?")
+
     def update_clustering(self, clustering):
         plt.clf()
         n_clusters = len(clustering.clusters)
@@ -66,5 +69,3 @@ class NotebookQuerierTS(Querier):
                 plt.plot(self.data[clusterid,:], alpha=0.5)
         display.clear_output(wait=True)
         display.display(plt.gcf())
-
-        return _query_yes_no("Continue querying?")

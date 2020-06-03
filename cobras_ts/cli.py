@@ -185,10 +185,10 @@ def main(argv=None):
     series, labels = prepare_data(**vars(args))
 
     if args.labelcol is None:
-        from cobras_ts.commandlinequerier import CommandLineQuerier
+        from cobras_ts.querier.commandlinequerier import CommandLineQuerier
         querier = CommandLineQuerier()
     else:
-        from cobras_ts.labelquerier import LabelQuerier
+        from cobras_ts.querier.labelquerier import LabelQuerier
         querier = LabelQuerier(labels)
 
     clusterer_args = vars(args)

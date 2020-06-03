@@ -1,7 +1,7 @@
 import abc
 
 
-class Querier:
+class Querier(abc.ABC):
 
     def __init__(self):
         pass
@@ -10,12 +10,14 @@ class Querier:
     def query_points(self, idx1, idx2):
         return
 
-    @abc.abstractmethod
+    def continue_cluster_process(self):
+        """Returns whether or not the clustering process should continue"""
+        return True
+
     def update_clustering(self, clustering):
         # not ideal? this has not too much to do with querying, it is only needed for the webapp
-        return
+        pass  # do nothing
 
-    @abc.abstractmethod
     def update_clustering_detailed(self, clustering):
         # not ideal? this has not too much to do with querying, it is only needed for the webapp
-        return
+        pass  # do nothing
