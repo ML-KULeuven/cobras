@@ -14,7 +14,7 @@ class COBRAS_DTW(COBRAS):
         data_to_cluster = self.data[np.ix_(si.indices, si.indices)]
         spec = SpectralClustering(k, affinity="precomputed")
         spec.fit(data_to_cluster)
-        split_labels = spec.labels_.astype(np.int)
+        split_labels = spec.labels_.astype(np.int_)
 
         labels_to_indices = []
         for label in set(split_labels):
