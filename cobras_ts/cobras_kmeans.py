@@ -15,7 +15,7 @@ class COBRAS_kmeans(COBRAS):
         km = KMeans(k)
         km.fit(data_to_cluster)
 
-        split_labels = km.labels_.astype(np.int)
+        split_labels = km.labels_.astype(np.int_)
 
         training = []
         no_training = []
